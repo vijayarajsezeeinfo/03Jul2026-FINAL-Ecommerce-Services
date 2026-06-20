@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ezeeinfo.dao.UserDAO;
 import com.ezeeinfo.dto.UserDTO;
+import com.ezeeinfo.exception.ServiceException;
 import com.ezeeinfo.service.UserService;
 import com.ezeeinfo.util.PasswordUtil;
 import com.ezeeinfo.util.SecurityUtil;
@@ -33,6 +34,9 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		userDTO.setPassword(PasswordUtil.hashPassword(userDTO.getPassword()));
 		userDTO.setUpdatedBy(SecurityUtil.getUserId());
+		if (!userDTO.getNamespace().getCode().equals(userDAO.getUser(SecurityUtil.getUserId()).getNamespace().getCode())) {
+			throw new ServiceException("Invalid Namespace. Enter valid Namespace");
+		}
 		return userDAO.update(userDTO);
 	}
 

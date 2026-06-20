@@ -70,7 +70,7 @@ public class AddressController {
 		addressIO.setUser(userIO);
 		addressIO.setNamespace(namespaceIO);
 		addressIO.setActiveFlag(addressDTO.getActiveFlag());
-		addressIO.setUpdatedBy(addressDTO.getUpdatedBy());
+//		addressIO.setUpdatedBy(addressDTO.getUpdatedBy());
 		log.info("{}", addressIO);
 		return addressIO;
 	}
@@ -91,7 +91,7 @@ public class AddressController {
 		addressDTO.setUser(userDTO);
 		addressDTO.setNamespace(namespaceDTO);
 		addressDTO.setActiveFlag(addressIO.getActiveFlag());
-		addressDTO.setUpdatedBy(addressIO.getUpdatedBy());
+//		addressDTO.setUpdatedBy(addressIO.getUpdatedBy());
 		log.info("{}", addressDTO);
 		return addressDTO;
 	}

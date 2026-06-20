@@ -1,4 +1,3 @@
-
 /* Procedure structure for procedure `EZEE_SP_ADDRESS_IUD` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `EZEE_SP_ADDRESS_IUD` */;
@@ -164,7 +163,7 @@ DELIMITER $$
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `EZEE_SP_BRAND_IUD`(
     INOUT pcrCode VARCHAR(30),
     IN pcrName VARCHAR(50),
-    IN pitNamespaceId INT,
+    IN pcrNamespaceCode VARCHAR(30),
     IN pitActiveFlag TINYINT,
     IN pitUpdatedBy INT,
     IN pitDebugFlag TINYINT,
@@ -172,18 +171,31 @@ DELIMITER $$
 )
 BEGIN
 
+    DECLARE litNamespaceId INT DEFAULT 0;
 /*
 *----------------------------------------------------------------------------------------------------
 * Variable Initialized
 *----------------------------------------------------------------------------------------------------
 */
     SET pitRowCount = 0;
+    
+/*  
+*----------------------------------------------------------------------------------------------------
+* Getting Namespace ID from CODE
+*----------------------------------------------------------------------------------------------------
+*/    
+    IF (EZEE_FN_ISNOTNULL(pcrNamespaceCode)) THEN
+    
+    SELECT `id` INTO litNamespaceId FROM `namespace` WHERE `code`=pcrNamespaceCode;
+
+    END IF;
 
 /*
 *----------------------------------------------------------------------------------------------------
 * Insert / Update / Delete Logic
 *----------------------------------------------------------------------------------------------------
 */
+
     IF (pitActiveFlag = 1 AND EZEE_FN_ISNOTNULL(pcrCode)) THEN
 
         UPDATE `brands`
@@ -191,7 +203,7 @@ BEGIN
                `active_flag` = pitActiveFlag,
                `updated_by` = pitUpdatedBy,
                `updated_at` = NOW()
-         WHERE `namespace_id` = pitNamespaceId
+         WHERE `namespace_id` = litNamespaceId
            AND `code` = pcrCode;
 
         SELECT ROW_COUNT() INTO pitRowCount;
@@ -213,7 +225,7 @@ BEGIN
         (
             pcrCode,
             pcrName,
-            pitNamespaceId,
+            litNamespaceId,
             1,
             pitUpdatedBy,
             NOW()
@@ -231,7 +243,7 @@ BEGIN
            SET `active_flag` = pitActiveFlag,
                `updated_by` = pitUpdatedBy,
                `updated_at` = NOW()
-         WHERE `namespace_id` = pitNamespaceId
+         WHERE `namespace_id` = litNamespaceId
            AND `code` = pcrCode;
 
         SELECT ROW_COUNT() INTO pitRowCount;
@@ -250,7 +262,7 @@ DELIMITER $$
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `EZEE_SP_CATEGORY_IUD`(
     INOUT pcrCode VARCHAR(30),
     IN pcrName VARCHAR(30),
-    IN pitNamespaceId INT,
+    IN pcrNamespaceCode VARCHAR(30),
     IN pitActiveFlag TINYINT,
     IN pitUpdatedBy INT,
     IN pitDebugFlag TINYINT,
@@ -258,13 +270,26 @@ DELIMITER $$
 )
 BEGIN
 
+   DECLARE litNamespaceId INT DEFAULT 0;
+
 /*
 *----------------------------------------------------------------------------------------------------
 * Variable Initialized
 *----------------------------------------------------------------------------------------------------
 */
     SET pitRowCount = 0;
+    
+/*  
+*----------------------------------------------------------------------------------------------------
+* Getting Namespace ID from CODE
+*----------------------------------------------------------------------------------------------------
+*/    
+    IF (EZEE_FN_ISNOTNULL(pcrNamespaceCode)) THEN
+    
+    SELECT `id` INTO litNamespaceId FROM `namespace` WHERE `code`=pcrNamespaceCode;
 
+    END IF;
+    
 /*
 *----------------------------------------------------------------------------------------------------
 * Insert / Update / Delete Logic
@@ -279,7 +304,7 @@ BEGIN
                `active_flag` = pitActiveFlag,
                `updated_by` = pitUpdatedBy,
                `updated_at` = NOW()
-         WHERE `namespace_id` = pitNamespaceId
+         WHERE `namespace_id` = litNamespaceId
            AND `code` = pcrCode;
 
         SELECT ROW_COUNT() INTO pitRowCount;
@@ -303,7 +328,7 @@ BEGIN
         (
             pcrCode,
             pcrName,
-            pitNamespaceId,
+            litNamespaceId,
             1,
             pitUpdatedBy,
             NOW()
@@ -323,7 +348,7 @@ BEGIN
            SET `active_flag` = pitActiveFlag,
                `updated_by` = pitUpdatedBy,
                `updated_at` = NOW()
-         WHERE `namespace_id` = pitNamespaceId
+         WHERE `namespace_id` = litNamespaceId
            AND `code` = pcrCode;
 
         SELECT ROW_COUNT() INTO pitRowCount;
@@ -420,6 +445,262 @@ BEGIN
 END */$$
 DELIMITER ;
 
+/* Procedure structure for procedure `EZEE_SP_ORDER_ITEMS_IUD` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `EZEE_SP_ORDER_ITEMS_IUD` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `EZEE_SP_ORDER_ITEMS_IUD`( 
+  INOUT pcrCode VARCHAR(30),
+  IN pitOrderId INT,
+  IN pitProductId INT,
+  IN pitQuantity INT,
+  IN pdcPrice DECIMAL(12,2),
+  IN pitNamespaceId INT,
+  IN pitActiveFlag INT,
+  IN pitUpdatedBy INT,
+  OUT pitRowCount INT
+)
+BEGIN 
+    -- INSERT: new record
+    IF EZEE_FN_ISNULL(pcrCode) AND pitActiveFlag = 1 THEN
+        SET pcrCode = EZEE_FN_RANDOM_CODE_GENERATOR('OITEM');
+       
+        INSERT INTO `order_items`
+        (
+        `code`, 
+        `order_id`, 
+        `product_id`, 
+        `quantity`, 
+        `price`, 
+         `namespace_id`,
+         `active_flag`, 
+         `updated_by`, 
+         `updated_at`
+         )
+        VALUES
+        (
+        pcrCode, 
+        pitOrderId, 
+        pitProductId, 
+        pitQuantity, 
+        pdcPrice,
+        pitNamespaceId,
+        pitActiveFlag, 
+        pitUpdatedBy, 
+        NOW()
+        );
+    
+    
+    END IF;
+    
+    SELECT ROW_COUNT() INTO pitRowCount;
+    
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `EZEE_SP_ORDER_IUD` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `EZEE_SP_ORDER_IUD` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `EZEE_SP_ORDER_IUD`(
+    INOUT pcrCode VARCHAR(30),
+    IN pcrUserCode VARCHAR(30),
+    IN pitOrderStatus TINYINT,
+    IN pdcTotalAmount DECIMAL(12,2),
+    IN pdtOrderDate DATETIME,
+    IN pcrNamespaceCode VARCHAR(30),
+    IN pitActiveFlag TINYINT,
+    IN pitUpdatedBy INT,
+    IN pitDebugFlag TINYINT,
+    OUT pitRowCount INT
+)
+BEGIN
+
+/*
+*-----------------------------------------------------------------------------------------------------------------------
+* Variable Declaration
+*-----------------------------------------------------------------------------------------------------------------------
+*/
+    DECLARE litNamespaceId INT DEFAULT 0;
+    DECLARE litUserId INT DEFAULT 0;
+
+/*
+*-----------------------------------------------------------------------------------------------------------------------
+* Getting IDs from CODE
+*-----------------------------------------------------------------------------------------------------------------------
+*/
+    IF EZEE_FN_ISNOTNULL(pcrNamespaceCode) THEN
+
+        SELECT id
+        INTO litNamespaceId
+        FROM namespace
+        WHERE `code` = pcrNamespaceCode;
+
+    END IF;
+
+    IF EZEE_FN_ISNOTNULL(pcrUserCode) THEN
+
+        SELECT id
+        INTO litUserId
+        FROM `user`
+        WHERE `code` = pcrUserCode;
+
+    END IF;
+
+/*
+*-----------------------------------------------------------------------------------------------------------------------
+* Update
+*-----------------------------------------------------------------------------------------------------------------------
+*/
+    IF (pitActiveFlag = 1 AND EZEE_FN_ISNOTNULL(pcrCode)) THEN
+
+        UPDATE `orders`
+           SET `user_id` = litUserId,
+               `order_status` = pitOrderStatus,
+               `total_amount` = pdcTotalAmount,
+               `order_date` = pdtOrderDate,
+               `active_flag` = pitActiveFlag,
+               `updated_by` = pitUpdatedBy,
+               `updated_at` = NOW()
+         WHERE `namespace_id` = litNamespaceId
+           AND `code` = pcrCode;
+
+        SELECT ROW_COUNT() INTO pitRowCount;
+
+/*
+*-----------------------------------------------------------------------------------------------------------------------
+* Insert
+*-----------------------------------------------------------------------------------------------------------------------
+*/
+    ELSEIF (pitActiveFlag = 1 AND EZEE_FN_ISNULL(pcrCode)) THEN
+
+        SET pcrCode = EZEE_FN_RANDOM_CODE_GENERATOR('ORDR');
+
+        INSERT INTO `orders`
+        (
+            `code`,
+            `user_id`,
+            `order_status`,
+            `total_amount`,
+            `order_date`,
+            `namespace_id`,
+            `active_flag`,
+            `updated_by`,
+            `updated_at`
+        )
+        VALUES
+        (
+            pcrCode,
+            litUserId,
+            pitOrderStatus,
+            pdcTotalAmount,
+            pdtOrderDate,
+            litNamespaceId,
+            1,
+            pitUpdatedBy,
+            NOW()
+        );
+
+        SELECT ROW_COUNT() INTO pitRowCount;
+
+/*
+*-----------------------------------------------------------------------------------------------------------------------
+* Soft Delete / Reactivate
+*-----------------------------------------------------------------------------------------------------------------------
+*/
+    ELSEIF (pitActiveFlag != 1 AND EZEE_FN_ISNOTNULL(pcrCode)) THEN
+
+        IF pitActiveFlag = 9 THEN
+            SET pitActiveFlag = 1;
+        END IF;
+
+        UPDATE `orders`
+           SET `active_flag` = pitActiveFlag,
+               `updated_by` = pitUpdatedBy,
+               `updated_at` = NOW()
+         WHERE `namespace_id` = litNamespaceId
+           AND `code` = pcrCode;
+
+        SELECT ROW_COUNT() INTO pitRowCount;
+
+    END IF;
+
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `EZEE_SP_PAYMENT_IUD` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `EZEE_SP_PAYMENT_IUD` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `EZEE_SP_PAYMENT_IUD`(
+ INOUT pcrCode VARCHAR(30),
+ IN pitOrderId INT,
+ IN pitPaymentMode TINYINT,
+ IN pdcTotalAmountToPay DECIMAL(12,2),
+ IN pdcPaidAmount DECIMAL(12,2),
+ IN pdcBalanceAmount DECIMAL(12,2),
+ IN pitBillingStatus TINYINT,
+ IN pcrTransactionId VARCHAR(50),
+ IN pcrRemarks VARCHAR(150),
+ IN pitNamespaceId INT,
+ IN pitActiveFlag INT,
+ IN pitUpdatedBy INT,
+ OUT pitRowCount INT
+ )
+BEGIN
+ 
+ DECLARE lcrCode VARCHAR(30) DEFAULT NULL;
+ 
+    
+    IF EZEE_FN_ISNULL(pcrCode) AND pitActiveFlag = 1 THEN
+    
+    SET lcrCode = EZEE_FN_RANDOM_CODE_GENERATOR('PYMT');
+       
+       INSERT INTO `payments`
+       ( 
+         `code`,
+         `order_id`,
+         `payment_mode`,
+         `total_amount_to_pay`,
+         `paid_amount`,
+         `balance_amount`,
+         `billing_status`,
+         `transaction_id`,
+         `remarks`,
+         `namespace_id`,
+         `active_flag`,
+         `updated_by`,
+         `updated_at`
+        )
+        VALUES
+        (
+          lcrCode,
+          pitOrderId,
+          pitPaymentMode,
+          pdcTotalAmountToPay,
+          pdcPaidAmount,
+          pdcBalanceAmount,
+          pitBillingStatus,
+          pcrTransactionId,
+          pcrRemarks,
+          pitNamespaceId,
+          1,
+          pitUpdatedBy,
+          NOW()
+         );
+        
+      END IF;  
+          SELECT ROW_COUNT() INTO pitRowCount;
+    
+ END */$$
+DELIMITER ;
+
 /* Procedure structure for procedure `EZEE_SP_PRODUCT_INVENTORY_IUD` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `EZEE_SP_PRODUCT_INVENTORY_IUD` */;
@@ -430,7 +711,7 @@ DELIMITER $$
     INOUT pcrCode VARCHAR(30),
     IN pcrProductCode VARCHAR(30),
     IN pitAvailableQuantity INT,
-    IN pitNamespaceId INT,
+    IN pcrNamespaceCode VARCHAR(30),
     IN pitActiveFlag TINYINT,
     IN pitUpdatedBy INT,
     IN pitDebugFlag TINYINT,
@@ -444,6 +725,7 @@ BEGIN
 *----------------------------------------------------------------------------------------------------
 */
     DECLARE litProductId INT DEFAULT 0;
+    DECLARE litNamespaceId INT DEFAULT 0;
 
 /*
 *----------------------------------------------------------------------------------------------------
@@ -452,6 +734,16 @@ BEGIN
 */
     SET pitRowCount = 0;
 
+/*    
+*----------------------------------------------------------------------------------------------------
+* Getting Namespace ID from CODE
+*----------------------------------------------------------------------------------------------------
+*/    
+    IF (EZEE_FN_ISNOTNULL(pcrNamespaceCode)) THEN
+    
+    SELECT `id` INTO litNamespaceId FROM `namespace` WHERE `code`=pcrNamespaceCode;
+
+    END IF;
 /*
 *----------------------------------------------------------------------------------------------------
 * Getting Product ID from CODE
@@ -462,7 +754,7 @@ BEGIN
         SELECT `id`
           INTO litProductId
           FROM `products`
-         WHERE `namespace_id` = pitNamespaceId
+         WHERE `namespace_id` = litNamespaceId
            AND `code` = pcrProductCode;
 
     END IF;
@@ -480,7 +772,7 @@ BEGIN
                `active_flag` = pitActiveFlag,
                `updated_by` = pitUpdatedBy,
                `updated_at` = NOW()
-         WHERE `namespace_id` = pitNamespaceId
+         WHERE `namespace_id` = litNamespaceId
            AND `code` = pcrCode;
 
         SELECT ROW_COUNT() INTO pitRowCount;
@@ -504,7 +796,7 @@ BEGIN
             pcrCode,
             litProductId,
             pitAvailableQuantity,
-            pitNamespaceId,
+            litNamespaceId,
             1,
             pitUpdatedBy,
             NOW()
@@ -522,7 +814,7 @@ BEGIN
            SET `active_flag` = pitActiveFlag,
                `updated_by` = pitUpdatedBy,
                `updated_at` = NOW()
-         WHERE `namespace_id` = pitNamespaceId
+         WHERE `namespace_id` = litNamespaceId
            AND `code` = pcrCode;
 
         SELECT ROW_COUNT() INTO pitRowCount;
@@ -545,13 +837,15 @@ DELIMITER $$
     IN pdcPrice DECIMAL(12,2),
     IN pcrBrandCode VARCHAR(30),
     IN pcrCategoryCode VARCHAR(30),
-    IN pitNamespaceId INT,
+    IN pcrNamespaceCode VARCHAR(30),
     IN pitActiveFlag TINYINT,
     IN pitUpdatedBy INT,
     IN pitDebugFlag TINYINT,
     OUT pitRowCount INT
 )
 BEGIN
+
+   DECLARE litNamespaceId INT DEFAULT 0;
 
 /*
 *----------------------------------------------------------------------------------------------------
@@ -567,6 +861,17 @@ BEGIN
 *----------------------------------------------------------------------------------------------------
 */
     SET pitRowCount = 0;
+    
+/*  
+*----------------------------------------------------------------------------------------------------
+* Getting Namespace ID from CODE
+*----------------------------------------------------------------------------------------------------
+*/    
+    IF (EZEE_FN_ISNOTNULL(pcrNamespaceCode)) THEN
+    
+    SELECT `id` INTO litNamespaceId FROM `namespace` WHERE `code`=pcrNamespaceCode;
+
+    END IF;
 
 /*
 *----------------------------------------------------------------------------------------------------
@@ -578,7 +883,7 @@ BEGIN
         SELECT `id`
           INTO litBrandId
           FROM `brands`
-         WHERE `namespace_id` = pitNamespaceId
+         WHERE `namespace_id` = litNamespaceId
            AND `code` = pcrBrandCode;
 
     END IF;
@@ -588,7 +893,7 @@ BEGIN
         SELECT `id`
           INTO litCategoryId
           FROM `categories`
-         WHERE `namespace_id` = pitNamespaceId
+         WHERE `namespace_id` = litNamespaceId
            AND `code` = pcrCategoryCode;
 
     END IF;
@@ -609,7 +914,7 @@ BEGIN
                `active_flag` = pitActiveFlag,
                `updated_by` = pitUpdatedBy,
                `updated_at` = NOW()
-         WHERE `namespace_id` = pitNamespaceId
+         WHERE `namespace_id` = litNamespaceId
            AND `code` = pcrCode;
 
         SELECT ROW_COUNT() INTO pitRowCount;
@@ -639,7 +944,7 @@ BEGIN
             pdcPrice,
             litBrandId,
             litCategoryId,
-            pitNamespaceId,
+            litNamespaceId,
             1,
             pitUpdatedBy,
             NOW()
@@ -657,7 +962,7 @@ BEGIN
            SET `active_flag` = pitActiveFlag,
                `updated_by` = pitUpdatedBy,
                `updated_at` = NOW()
-         WHERE `namespace_id` = pitNamespaceId
+         WHERE `namespace_id` = litNamespaceId
            AND `code` = pcrCode;
 
         SELECT ROW_COUNT() INTO pitRowCount;
@@ -834,8 +1139,7 @@ BEGIN
 END */$$
 DELIMITER ;
 
-/* Procedure structure for procedure `sp_get_top_selling_products` */
-
-/*!50003 DROP PROCEDURE IF EXISTS  `sp_get_top_selling_products` */;
-
-DELIMITER $$
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

@@ -64,7 +64,7 @@ public class ProductController {
 		productIO.setCategory(categoryIO);
 		productIO.setNamespace(namespaceIO);
 		productIO.setActiveFlag(productDTO.getActiveFlag());
-		productIO.setUpdatedBy(productDTO.getUpdatedBy());
+//		productIO.setUpdatedBy(productDTO.getUpdatedBy());
 		return productIO;
 	}
 
@@ -81,7 +81,7 @@ public class ProductController {
 		productDTO.setCategory(categoryDTO);
 		productDTO.setNamespace(namespaceDTO);
 		productDTO.setActiveFlag(productIO.getActiveFlag());
-		productDTO.setUpdatedBy(productIO.getUpdatedBy());
+//		productDTO.setUpdatedBy(productIO.getUpdatedBy());
 		return productDTO;
 	}
 }

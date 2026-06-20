@@ -37,7 +37,7 @@ public class CategoryController {
 		return categoryDTOToIO(categoryService.getCategoryByCode(code));
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value="/update" ,method = RequestMethod.POST)
 	public CategoryIO update(@RequestBody CategoryIO categoryIO) {
 		return categoryDTOToIO(categoryService.update(categoryIOToDTO(categoryIO)));
 	}
@@ -49,7 +49,7 @@ public class CategoryController {
 		categoryIO.setName(categoryDTO.getName());
 		categoryIO.setNamespace(namespaceIO);
 		categoryIO.setActiveFlag(categoryDTO.getActiveFlag());
-		categoryIO.setUpdatedBy(categoryDTO.getUpdatedBy());
+//		categoryIO.setUpdatedBy(categoryDTO.getUpdatedBy());
 		return categoryIO;
 	}
 
@@ -60,7 +60,7 @@ public class CategoryController {
 		categoryDTO.setName(categoryIO.getName());
 		categoryDTO.setNamespace(namespaceDTO);
 		categoryDTO.setActiveFlag(categoryIO.getActiveFlag());
-		categoryDTO.setUpdatedBy(categoryIO.getUpdatedBy());
+//		categoryDTO.setUpdatedBy(categoryIO.getUpdatedBy());
 		return categoryDTO;
 	}
 }

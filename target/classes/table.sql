@@ -45,6 +45,13 @@ CREATE TABLE `address` (
   CONSTRAINT `fk_addresses_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+/*Data for the table `address` */
+
+insert  into `address`(`id`,`code`,`door_no`,`street`,`place`,`city`,`state`,`country`,`pincode`,`user_id`,`namespace_id`,`active_flag`,`updated_by`,`updated_at`) values 
+(6,'ADDR11407','7','malligai puram main road','irudayapur, kilapudur','tiruchirappalli','tamilnadu','india',620001,24,2,1,24,'2026-06-15 20:39:57'),
+(7,'ADDR16199','88','bazar street','thuraiyur','tiruchirappalli','tamilnadu','india',620011,26,3,1,1,'2026-06-17 20:36:21'),
+(8,'ADDR56522','10','bazar street','t nagar, chennai','chennai','tamilnadu','india',620028,34,3,1,26,'2026-06-18 12:09:12');
+
 /*Table structure for table `brands` */
 
 DROP TABLE IF EXISTS `brands`;
@@ -63,7 +70,14 @@ CREATE TABLE `brands` (
   KEY `idx_brands_namespace_active` (`namespace_id`,`active_flag`),
   CONSTRAINT `fk_brands_namespace_id` FOREIGN KEY (`namespace_id`) REFERENCES `namespace` (`id`),
   CONSTRAINT `fk_brands_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `brands` */
+
+insert  into `brands`(`id`,`code`,`name`,`namespace_id`,`active_flag`,`updated_by`,`updated_at`) values 
+(1,'BRAND22697','samsung',2,1,1,'2026-06-11 13:29:04'),
+(2,'BRAND68503','sony',2,1,1,'2026-06-15 21:07:04'),
+(3,'BRAND99516','mi',2,1,31,'2026-06-19 12:40:45');
 
 /*Table structure for table `cart` */
 
@@ -87,6 +101,21 @@ CREATE TABLE `cart` (
   CONSTRAINT `fk_carts_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_carts_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `cart` */
+
+insert  into `cart`(`id`,`code`,`user_id`,`namespace_id`,`active_flag`,`updated_by`,`updated_at`) values 
+(3,'CRT62904',24,2,1,24,'2026-06-15 20:39:57'),
+(4,'CRT57796',25,3,1,1,'2026-06-15 13:49:39'),
+(5,'CRT67619',26,3,1,1,'2026-06-15 14:12:42'),
+(6,'CRT99877',27,2,1,1,'2026-06-15 19:37:10'),
+(7,'CRT78031',28,2,1,1,'2026-06-15 19:48:26'),
+(8,'CRT39034',29,2,1,24,'2026-06-15 20:26:36'),
+(9,'CRT90094',30,2,1,24,'2026-06-15 20:41:15'),
+(10,'CRT64467',31,2,1,24,'2026-06-16 13:43:48'),
+(11,'CRT21743',32,2,1,1,'2026-06-17 20:00:00'),
+(12,'CRT94728',33,2,1,1,'2026-06-17 20:01:08'),
+(13,'CRT25218',34,3,1,26,'2026-06-18 12:05:15');
 
 /*Table structure for table `cart_items` */
 
@@ -114,6 +143,8 @@ CREATE TABLE `cart_items` (
   CONSTRAINT `fk_cart_items_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+/*Data for the table `cart_items` */
+
 /*Table structure for table `categories` */
 
 DROP TABLE IF EXISTS `categories`;
@@ -132,7 +163,14 @@ CREATE TABLE `categories` (
   KEY `idx_categories_namespace_active` (`namespace_id`,`active_flag`),
   CONSTRAINT `fk_categories_namespace_id` FOREIGN KEY (`namespace_id`) REFERENCES `namespace` (`id`),
   CONSTRAINT `fk_categories_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `categories` */
+
+insert  into `categories`(`id`,`code`,`name`,`namespace_id`,`active_flag`,`updated_by`,`updated_at`) values 
+(1,'CAT78431','electronics',2,1,1,'2026-06-11 13:09:40'),
+(2,'CAT67744','food',2,1,31,'2026-06-19 12:49:54'),
+(5,'CAT82344','food',3,1,31,'2026-06-19 12:50:21');
 
 /*Table structure for table `namespace` */
 
@@ -151,6 +189,17 @@ CREATE TABLE `namespace` (
   KEY `fk_namespace_updated_by` (`updated_by`),
   CONSTRAINT `fk_namespace_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `namespace` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `namespace` */
+
+insert  into `namespace`(`id`,`code`,`name`,`active_flag`,`updated_by`,`updated_at`) values 
+(1,'SUPER000','super admin namespace',1,1,'2026-06-10 12:52:31'),
+(2,'AMZN001','amazon',1,1,'2026-06-10 16:33:57'),
+(3,'FLPKT002','flipkart',1,1,'2026-06-10 16:37:39'),
+(4,'NMSPC68858','meesho',2,1,'2026-06-11 13:58:38'),
+(5,'NS35601','ajio',1,1,'2026-06-17 19:59:34'),
+(23,'NS18438','snapdeal',1,1,'2026-06-17 20:00:33'),
+(24,'NS93913','big basket',1,24,'2026-06-18 11:59:52');
 
 /*Table structure for table `order_items` */
 
@@ -177,7 +226,17 @@ CREATE TABLE `order_items` (
   CONSTRAINT `fk_order_items_order_id` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
   CONSTRAINT `fk_order_items_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
   CONSTRAINT `fk_order_items_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `order_items` */
+
+insert  into `order_items`(`id`,`code`,`order_id`,`product_id`,`quantity`,`price`,`namespace_id`,`active_flag`,`updated_by`,`updated_at`) values 
+(1,'OITEM86531',16,4,2,40000.00,2,1,24,'2026-06-20 16:43:11'),
+(2,'OITEM47021',17,4,2,40000.00,2,1,24,'2026-06-20 16:51:01'),
+(3,'OITEM98082',17,5,1,46000.00,2,1,24,'2026-06-20 16:51:01'),
+(4,'OITEM67163',18,4,2,40000.00,2,1,24,'2026-06-20 17:50:46'),
+(5,'OITEM62543',19,4,2,40000.00,2,1,24,'2026-06-20 18:11:22'),
+(6,'OITEM96553',19,5,1,46000.00,2,1,24,'2026-06-20 18:11:23');
 
 /*Table structure for table `orders` */
 
@@ -204,7 +263,30 @@ CREATE TABLE `orders` (
   CONSTRAINT `fk_orders_namespace_id` FOREIGN KEY (`namespace_id`) REFERENCES `namespace` (`id`),
   CONSTRAINT `fk_orders_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`),
   CONSTRAINT `fk_orders_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `orders` */
+
+insert  into `orders`(`id`,`code`,`user_id`,`order_status`,`total_amount`,`order_date`,`namespace_id`,`active_flag`,`updated_by`,`updated_at`) values 
+(1,'ORDR24010',24,2,40000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 15:45:01'),
+(2,'ORDR25267',24,2,40000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 15:48:07'),
+(3,'ORDR61620',24,2,40000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 15:52:50'),
+(4,'ORDR26392',24,2,40000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 15:55:31'),
+(5,'ORDR76932',24,2,40000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 15:57:15'),
+(6,'ORDR71307',24,2,40000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 15:59:26'),
+(7,'ORDR50149',24,2,80000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 16:11:10'),
+(8,'ORDR46989',24,2,80000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 16:14:40'),
+(9,'ORDR50365',24,2,80000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 16:21:59'),
+(10,'ORDR94623',24,2,80000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 16:25:34'),
+(11,'ORDR53134',24,2,80000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 16:26:25'),
+(12,'ORDR32650',24,2,80000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 16:29:09'),
+(13,'ORDR23743',24,2,80000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 16:31:32'),
+(14,'ORDR42401',24,2,80000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 16:35:45'),
+(15,'ORDR32074',24,2,80000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 16:38:25'),
+(16,'ORDR67542',24,2,80000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 16:43:11'),
+(17,'ORDR91290',24,2,126000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 16:51:01'),
+(18,'ORDR35486',24,2,126000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 17:50:43'),
+(19,'ORDR23129',24,2,126000.00,'2026-06-20 14:00:00',2,1,24,'2026-06-20 18:11:22');
 
 /*Table structure for table `payments` */
 
@@ -235,7 +317,17 @@ CREATE TABLE `payments` (
   CONSTRAINT `fk_payments_namespace_id` FOREIGN KEY (`namespace_id`) REFERENCES `namespace` (`id`),
   CONSTRAINT `fk_payments_order_id` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
   CONSTRAINT `fk_payments_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `payments` */
+
+insert  into `payments`(`id`,`code`,`order_id`,`payment_mode`,`total_amount_to_pay`,`paid_amount`,`balance_amount`,`billing_status`,`transaction_id`,`remarks`,`namespace_id`,`active_flag`,`updated_by`,`updated_at`) values 
+(1,'PYMT87286',14,3,80000.00,80000.00,0.00,3,'TRSCN7000','No',2,1,24,'2026-06-20 16:35:45'),
+(2,'PYMT76319',15,3,80000.00,80000.00,0.00,3,'TRSCN7000','No',2,1,24,'2026-06-20 16:38:25'),
+(3,'PYMT88511',16,3,80000.00,80000.00,0.00,3,'TRSCN7000','No',2,1,24,'2026-06-20 16:43:11'),
+(4,'PYMT40685',17,3,126000.00,127000.00,1000.00,3,'TRSCN7000','No',2,1,24,'2026-06-20 16:51:01'),
+(5,'PYMT74586',18,3,126000.00,127000.00,1000.00,3,'TRSCN7000','No',2,1,24,'2026-06-20 17:50:45'),
+(6,'PYMT37834',19,3,126000.00,127000.00,1000.00,3,'TRSCN7000','No',2,1,24,'2026-06-20 18:11:22');
 
 /*Table structure for table `product_inventory` */
 
@@ -258,7 +350,14 @@ CREATE TABLE `product_inventory` (
   CONSTRAINT `fk_product_inventory_namespace_id` FOREIGN KEY (`namespace_id`) REFERENCES `namespace` (`id`),
   CONSTRAINT `fk_product_inventory_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`),
   CONSTRAINT `fk_product_inventory_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `product_inventory` */
+
+insert  into `product_inventory`(`id`,`code`,`product_id`,`available_quantity`,`namespace_id`,`active_flag`,`updated_by`,`updated_at`) values 
+(1,'PINV53820',2,10,2,1,1,'2026-06-11 13:49:33'),
+(2,'PINV13622',5,9,2,1,31,'2026-06-19 13:08:30'),
+(3,'PINV99999',4,8,2,1,24,'2026-06-20 18:10:37');
 
 /*Table structure for table `products` */
 
@@ -287,32 +386,16 @@ CREATE TABLE `products` (
   CONSTRAINT `fk_products_category_id` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
   CONSTRAINT `fk_products_namespace_id` FOREIGN KEY (`namespace_id`) REFERENCES `namespace` (`id`),
   CONSTRAINT `fk_products_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-/*Table structure for table `shipments` */
+/*Data for the table `products` */
 
-DROP TABLE IF EXISTS `shipments`;
-
-CREATE TABLE `shipments` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `code` varchar(30) NOT NULL,
-  `order_id` int NOT NULL,
-  `tracking_number` varchar(50) NOT NULL,
-  `status` tinyint NOT NULL,
-  `namespace_id` int NOT NULL,
-  `active_flag` tinyint NOT NULL DEFAULT '1',
-  `updated_by` int NOT NULL,
-  `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `code` (`code`),
-  KEY `fk_shipments_namespace_id` (`namespace_id`),
-  KEY `fk_shipments_updated_by` (`updated_by`),
-  KEY `idx_shipments_tracking_status_active` (`tracking_number`,`status`,`active_flag`),
-  KEY `idx_shipments_order_status` (`order_id`,`status`),
-  CONSTRAINT `fk_shipments_namespace_id` FOREIGN KEY (`namespace_id`) REFERENCES `namespace` (`id`),
-  CONSTRAINT `fk_shipments_order_id` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
-  CONSTRAINT `fk_shipments_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+insert  into `products`(`id`,`code`,`name`,`description`,`price`,`brand_id`,`category_id`,`namespace_id`,`active_flag`,`updated_by`,`updated_at`) values 
+(1,'PRODUCT90194','Galaxy s24 ultra','can your phone do this?',180000.00,1,1,2,1,1,'2026-06-11 13:37:34'),
+(2,'PRODUCT12880','Galaxy s24 Pro ultra ','can your phone do this?',190000.00,1,1,2,1,1,'2026-06-11 13:41:58'),
+(3,'PRODUCT55653','Galaxy s25','can your phone do this?',20000.00,1,1,2,1,24,'2026-06-16 13:33:31'),
+(4,'PRODUCT22634','xperia','real phone',40000.00,2,1,2,1,31,'2026-06-18 19:51:42'),
+(5,'PRODUCT31177','xperia 2','real phone',46000.00,2,1,2,1,31,'2026-06-19 12:53:29');
 
 /*Table structure for table `user` */
 
@@ -340,3 +423,19 @@ CREATE TABLE `user` (
   CONSTRAINT `fk_users_namespace_id` FOREIGN KEY (`namespace_id`) REFERENCES `namespace` (`id`),
   CONSTRAINT `fk_users_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*Data for the table `user` */
+
+insert  into `user`(`id`,`code`,`username`,`namespace_id`,`password`,`email`,`mobile`,`role`,`active_flag`,`updated_by`,`updated_at`) values 
+(1,'SUPER000','super admin',1,'$2a$10$EMi2txPAI3mpUw1oCMFVc.hd8xTOHw8NhU/Mxc2KOvw7Jb4cCdUdC','superadmin@gmail.com','+919361595275',0,1,1,'2026-06-15 12:50:50'),
+(24,'USR54604','prakash',2,'$2a$10$2Chf9JcJNzBQYR.dQfbzaePNtTx8qu84fnQLmcroxRof.dP6aFQji','prakash@gmail.com','+918428578348',1,1,24,'2026-06-15 20:39:57'),
+(25,'USR63991','vicky',3,'$2a$10$8AP5SHu1NvmSxxxwJnQB/OU5h5sT15K29FAyKfTv0AYyM/ToOsV56','vicky@gmail.com','+918610279793',1,1,1,'2026-06-15 13:49:39'),
+(26,'USR18655','kabilan',3,'$2a$10$KBy.iKwaAh9rpa1WJZP9DOss9jJybRBm2Bmk/6jReODf6.e5cWrUK','kabilan@gmail.com','+919750160405',1,1,1,'2026-06-15 14:12:42'),
+(27,'USR68598','john',2,'$2a$10$M.i75O14eKTgxLQB8v9hLuzSWGjlTDkRVZ0iWSU0HYbb/6Gsm5Cwi','john@gmail.com','+918428578349',2,1,1,'2026-06-15 19:37:10'),
+(28,'USR26399','ram',2,'$2a$10$QFRbnFrHRb0IN5Jv.9H4zODoQnV.tzdj3RUdXodRc2mtsu.fO8j06','ram@gmail.com','+918428578340',2,1,1,'2026-06-15 19:48:26'),
+(29,'USR86047','raju',2,'$2a$10$Zti9teD4VSkvu.0OSl.HveWrkkjfKCG0c4.7rV.qsdsyzcYeE5ufa','raju@gmail.com','+918428578343',2,1,24,'2026-06-15 20:26:36'),
+(30,'USR18649','sam',2,'$2a$10$x2ajdW.kig626EI1txfldebA8XP7W3fMo.CIMKSaLpZQ7p3J0nZH.','sam@gmail.com','+918428578341',2,1,24,'2026-06-15 20:41:15'),
+(31,'USR65561','askar',2,'$2a$10$XqK07hpx06lfDx.MpGnATOogEcbjr3dS8c/DEX70UXTXipKGgt8I.','askar@gmail.com','+918428578346',2,1,24,'2026-06-16 13:43:48'),
+(32,'USR66109','vinoth',2,'$2a$10$NXin0nnLUcLa.wruQQ.tFexAJR0oaPI2KaWfybAmA5ZEStWktrf4.','vinoth@gmail.com','+918428578354',3,1,1,'2026-06-17 20:00:00'),
+(33,'USR77996','aravind',2,'$2a$10$PK34rMbf3QSpFCAKv4wIVOXpHArMJLRBq5H3B2DoY6g.wb9qMVPyC','aravind@gmail.com','+919428578354',3,1,1,'2026-06-17 20:01:08'),
+(34,'USR35171','arya',3,'$2a$10$V30fRKpUWPFC3Op9jGdGvOT4.F/iWxaw8aHBoR.J9gWGS8PkuWhIy','arya@gmail.com','+917428578354',3,1,26,'2026-06-18 12:05:15');

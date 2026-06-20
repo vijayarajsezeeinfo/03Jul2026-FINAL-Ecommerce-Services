@@ -43,7 +43,7 @@ public class NamespaceController {
 		namespaceIO.setCode(namespaceDTO.getCode());
 		namespaceIO.setName(namespaceDTO.getName());
 		namespaceIO.setActiveFlag(namespaceDTO.getActiveFlag());
-		namespaceIO.setUpdatedBy(namespaceDTO.getUpdatedBy());
+//		namespaceIO.setUpdatedBy(namespaceDTO.getUpdatedBy());
 
 		return namespaceIO;
 	}
@@ -53,7 +53,7 @@ public class NamespaceController {
 		namespaceDTO.setCode(namespaceIO.getCode());
 		namespaceDTO.setName(namespaceIO.getName());
 		namespaceDTO.setActiveFlag(namespaceIO.getActiveFlag());
-		namespaceDTO.setUpdatedBy(namespaceIO.getUpdatedBy());
+//		namespaceDTO.setUpdatedBy(namespaceIO.getUpdatedBy());
 
 		return namespaceDTO;
 	}
