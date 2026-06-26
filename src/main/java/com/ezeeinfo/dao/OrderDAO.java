@@ -84,7 +84,7 @@ public class OrderDAO {
 
 			if (currentQty < item.getQuantity()) {
 				LOG.info("EXCEPTION 400: {} Less Stock. Available : {}", item.getCode(), currentQty);
-				throw new ServiceException("EXCEPTION 400: " + item.getCode() + " Less Stock. Available : " + currentQty);
+				throw new ServiceException("EXCEPTION 400: " + item.getProduct().getCode() + " Less Stock. Available : " + currentQty);
 			}
 		}
 
@@ -132,6 +132,7 @@ public class OrderDAO {
 		}
 		catch (SQLException e) {
 			LOG.info("SQLException while EZEE_SP_ORDER_IUD. {}", e);
+			throw new ServiceException("SQLException while EZEE_SP_ORDER_IUD");
 		}
 
 		String sql2 = "SELECT id, code, user_id, order_status, total_amount, order_date, namespace_id, active_flag, updated_by FROM orders WHERE code = ?";
@@ -174,11 +175,13 @@ public class OrderDAO {
 			}
 			catch (SQLException e) {
 				LOG.info("SQLException while getting order. {}", e);
+				throw new ServiceException("SQLException while getting order");
 			}
 
 		}
 		catch (SQLException e) {
 			LOG.info("SQLException while getting order. {}", e);
+			throw new ServiceException("SQLException while getting order");
 		}
 
 		// Setting orderDTO in paymentDTO
@@ -205,10 +208,12 @@ public class OrderDAO {
 			}
 			catch (SQLException e) {
 				LOG.info("SQLException while checking if payment already exists");
+				throw new ServiceException("SQLException while checking if payment already exists");
 			}
 		}
 		catch (SQLException e) {
 			LOG.info("SQLException while checking if payment already exists");
+			throw new ServiceException("SQLException while checking if payment already exists");
 		}
 
 		// This check is to prevent update/ soft delete in payments and order
@@ -236,9 +241,11 @@ public class OrderDAO {
 				statement.execute();
 				LOG.info(" EZEE_SP_PAYMENT_IUD is executed.");
 				paymentDTO.setCode(statement.getString(1));
+				LOG.info("Payment DTO : {}", paymentDTO);
 			}
 			catch (SQLException e) {
 				LOG.info("SQLException while executing EZEE_SP_PAYMENT_IUD. {}", e);
+				throw new ServiceException("SQLException while executing EZEE_SP_PAYMENT_IUD.");
 			}
 
 			// insert in order items table
@@ -300,11 +307,13 @@ public class OrderDAO {
 			}
 			catch (SQLException e) {
 				LOG.info("SQLException while executing EZEE_SP_ORDER_ITEMS_IUD. {}", e);
+				throw new ServiceException("SQLException while executing EZEE_SP_ORDER_ITEMS_IUD.");
 			}
 
 		}
 		orderRequestDTO.setOrder(orderDTO);
 		orderRequestDTO.setPayment(paymentDTO);
+		LOG.info("Payment DTO : {}", orderRequestDTO.getPayment());
 		LOG.info("Order {} is updated", orderRequestDTO);
 		return orderRequestDTO;
 	}
@@ -439,10 +448,12 @@ public class OrderDAO {
 			}
 			catch (SQLException e) {
 				LOG.info("SQLException while getOrderByCode. {}", e);
+				throw new ServiceException("SQLException while getOrderByCode.");
 			}
 		}
 		catch (SQLException e) {
 			LOG.info("SQLException while getOrderByCode. {}", e);
+			throw new ServiceException("SQLException while getOrderByCode.");
 		}
 		LOG.info("Order is retrived from db for Order Code : {}", code);
 		return orderRequestDTO;

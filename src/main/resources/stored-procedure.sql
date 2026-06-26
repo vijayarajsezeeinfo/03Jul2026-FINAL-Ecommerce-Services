@@ -805,6 +805,8 @@ BEGIN
           pitUpdatedBy,
           NOW()
          );
+         
+         SET pcrCode = lcrCode; 
         
       END IF;  
           SELECT ROW_COUNT() INTO pitRowCount;
