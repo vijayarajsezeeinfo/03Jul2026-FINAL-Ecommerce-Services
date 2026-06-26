@@ -77,7 +77,6 @@ public class ProductInventoryDAO {
 				NamespaceDTO namespaceDTO = namespaceDAO.getNamespaceByCode(rs.getString("namespace_code"));
 				UserDTO updatedBy = userDAO.getUser(rs.getInt("product_inventory_updated_by"));
 
-				
 				productInventoryDTO = new ProductInventoryDTO();
 				productInventoryDTO.setId(rs.getInt("product_inventory_id"));
 				productInventoryDTO.setCode(rs.getString("product_inventory_code"));
@@ -121,7 +120,7 @@ public class ProductInventoryDAO {
 
 	public Integer getAvailableQuantityByProductId(int productId) {
 
-		String sql = "SELECT available_quantity " + "FROM product_inventory " + "WHERE product_id = ? AND active_flag = 1";
+		String sql = "SELECT available_quantity FROM product_inventory WHERE product_id = ? AND active_flag = 1";
 		try (Connection connection = DBConfig.getInstance().getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.setInt(1, productId);
 			try (ResultSet rs = statement.executeQuery()) {
@@ -135,5 +134,39 @@ public class ProductInventoryDAO {
 		}
 
 		return null;
+	}
+
+	public ProductInventoryDTO getProductInventoryByProductId(int productId) {
+		String sql = "SELECT pi.id AS product_inventory_id, pi.code AS product_inventory_code, p.code AS product_code, n.code AS namespace_code, p.name AS product_name, pi.product_id AS product_inventory_product_id, pi.available_quantity AS product_inventory_available_quantity, pi.namespace_id AS product_inventory_namespace_id, pi.active_flag AS product_inventory_active_flag, pi.updated_by AS product_inventory_updated_by FROM product_inventory `pi` LEFT JOIN products p ON pi.product_id = p.id LEFT JOIN namespace n ON pi.namespace_id = n.id WHERE pi.active_flag < 2 AND pi.product_id = ?";
+		ProductInventoryDTO productInventoryDTO = null;
+		try (Connection connection = DBConfig.getInstance().getConnection(); PreparedStatement statement = connection.prepareStatement(sql);) {
+			statement.setInt(1, productId);
+			try (ResultSet rs = statement.executeQuery();) {
+				if (!rs.next()) {
+					LOG.info("EXCEPTION 404: Product Inventory Not Found for Product {}", productId);
+					throw new ServiceException("EXCEPTION 404: Product Inventory Not Found");
+				}
+				ProductDTO productDTO = productDAO.getProductByCode(rs.getString("product_code"));
+				NamespaceDTO namespaceDTO = namespaceDAO.getNamespaceByCode(rs.getString("namespace_code"));
+				UserDTO updatedBy = userDAO.getUser(rs.getInt("product_inventory_updated_by"));
+
+				productInventoryDTO = new ProductInventoryDTO();
+				productInventoryDTO.setId(rs.getInt("product_inventory_id"));
+				productInventoryDTO.setCode(rs.getString("product_inventory_code"));
+				productInventoryDTO.setProduct(productDTO);
+				productInventoryDTO.setAvailableQuantity(rs.getInt("product_inventory_available_quantity"));
+				productInventoryDTO.setNamespace(namespaceDTO);
+				productInventoryDTO.setActiveFlag(rs.getInt("product_inventory_active_flag"));
+				productInventoryDTO.setUpdatedBy(updatedBy);
+			}
+			catch (SQLException e) {
+				LOG.info("SQLException while getProductInventoryById. {}", e);
+			}
+
+		}
+		catch (SQLException e) {
+			LOG.info("SQLException while getProductInventoryById. {}", e);
+		}
+		return productInventoryDTO;
 	}
 }

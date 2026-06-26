@@ -21,13 +21,8 @@ public class LoginController {
 	@RequestMapping(method = RequestMethod.POST)
 	public LoginResponseIO login(@RequestBody LoginRequestIO request) {
 		UserDTO userDTO = userDAO.login(request.getUsername(), request.getPassword(), request.getNamespaceCode());
-		// String token = JwtUtil.generateToken(userDTO.getId(),
-		// userDTO.getCode(), userDTO.getUsername(),
-		// userDTO.getRole().getName());
-		String token = JwtUtil.generateToken(userDTO);
 
-		// AuthDTO authDTO = new AuthDTO();
-		// authDTO.setUser(userDTO);
+		String token = JwtUtil.generateToken(userDTO);
 
 		LoginResponseIO loginResponseIO = new LoginResponseIO();
 		loginResponseIO.setToken(token);

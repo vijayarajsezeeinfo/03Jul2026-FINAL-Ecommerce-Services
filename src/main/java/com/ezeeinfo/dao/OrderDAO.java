@@ -27,6 +27,7 @@ import com.ezeeinfo.dto.OrderItemDTO;
 import com.ezeeinfo.dto.OrderRequestDTO;
 import com.ezeeinfo.dto.PaymentDTO;
 import com.ezeeinfo.dto.ProductDTO;
+import com.ezeeinfo.dto.ProductInventoryDTO;
 import com.ezeeinfo.dto.UserDTO;
 import com.ezeeinfo.dto.enumeration.BillingStatusEM;
 import com.ezeeinfo.dto.enumeration.OrderStatusEM;
@@ -61,8 +62,8 @@ public class OrderDAO {
 		// if ordered product is exists or not================
 		for (OrderItemDTO item : orderRequestDTO.getOrderItems()) {
 			List<ProductDTO> availableProducts = productDAO.getAllProducts(namespaceCode);
-			boolean isExists = availableProducts.stream().anyMatch(product -> product.getCode().equals(item.getProduct().getCode()));
-			if (!isExists) {
+			boolean isExisting = availableProducts.stream().anyMatch(product -> product.getCode().equals(item.getProduct().getCode()));
+			if (!isExisting) {
 				LOG.info("EXCEPTION 404: Product Not Found");
 				throw new ServiceException("EXCEPTION 404: Product Not Found");
 			}
@@ -144,6 +145,7 @@ public class OrderDAO {
 		OrderDTO orderDTO = null;
 
 		// We hit db to get orderDTO after order is inserted.
+		// we will set orderDTO in paymentDTO and orderItemDTO
 		// later we use that order id in payments and Order items.
 		try (Connection connection = DBConfig.getInstance().getConnection(); PreparedStatement statement = connection.prepareStatement(sql2);) {
 
@@ -209,6 +211,8 @@ public class OrderDAO {
 			LOG.info("SQLException while checking if payment already exists");
 		}
 
+		// This check is to prevent update/ soft delete in payments and order
+		// items table
 		if (!isPaymentExist) {
 			// insert in payments table
 			String sql3 = "{CALL EZEE_SP_PAYMENT_IUD( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )}";
@@ -275,15 +279,22 @@ public class OrderDAO {
 					if (currentQty == null) {
 						throw new ServiceException("EXCEPTION 404: Inventory not found for product : " + item.getProduct().getCode());
 					}
+
 					int remainingQty = currentQty - item.getQuantity();
-					String sql5 = "UPDATE product_inventory SET available_quantity = ? WHERE product_id = ?";
-					try (Connection connection2 = DBConfig.getInstance().getConnection(); PreparedStatement statement2 = connection2.prepareStatement(sql5)) {
-						statement2.setInt(1, remainingQty);
-						statement2.setInt(2, item.getProduct().getId());
-						statement2.executeUpdate();
-					}
-					LOG.info("Product Inventory Updated after order");
+
+					// Getting productInventoryDTO
+					LOG.info("Getting DB Product Inventory");
+					ProductInventoryDTO productInventoryDTO = productInventoryDAO.getProductInventoryByProductId(item.getProduct().getId());
+
+					// Setting available quantity in product inventory
+					LOG.info("Setting Product Inventory");
+					productInventoryDTO.setAvailableQuantity(remainingQty);
+
+					// Updating current available quantity after order
+					ProductInventoryDTO productInventoryDTO2 = productInventoryDAO.update(productInventoryDTO);
+
 				}
+				LOG.info("Product Inventory Updated after order");
 
 			}
 			catch (SQLException e) {
