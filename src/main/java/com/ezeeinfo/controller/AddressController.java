@@ -2,8 +2,6 @@ package com.ezeeinfo.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +16,14 @@ import com.ezeeinfo.controller.io.NamespaceIO;
 import com.ezeeinfo.controller.io.UserIOResponse;
 import com.ezeeinfo.dao.UserDAO;
 import com.ezeeinfo.dto.AddressDTO;
+import com.ezeeinfo.dto.AuthDTO;
 import com.ezeeinfo.dto.NamespaceDTO;
 import com.ezeeinfo.dto.UserDTO;
 import com.ezeeinfo.service.AddressService;
+import com.ezeeinfo.util.TokenUtil;
 
 @RestController
-@RequestMapping("/address")
+@RequestMapping("{authtoken}/address")
 public class AddressController {
 
 	@Autowired
@@ -34,27 +34,32 @@ public class AddressController {
 	NamespaceController namespaceController;
 	@Autowired
 	UserDAO userDAO;
+	@Autowired
+	TokenUtil tokenUtil;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressController.class);
 
 	@RequestMapping(value = "/{namespaceCode}", method = RequestMethod.GET)
-	public List<AddressIO> getAllAddresses(@PathVariable("namespaceCode") String namespaceCode) {
-		List<AddressIO> allAddresses = addressService.getAllAddresses(namespaceCode).stream().map(dto -> addressDTOToIO(dto)).toList();
+	public List<AddressIO> getAllAddresses(@PathVariable("authtoken") String authToken, @PathVariable("namespaceCode") String namespaceCode) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		List<AddressIO> allAddresses = addressService.getAllAddresses(authDTO, namespaceCode).stream().map(dto -> addressDTOToIO(dto)).toList();
 		LOG.info("Getting all addresses in Namespace {} : {}", namespaceCode, allAddresses);
 		return allAddresses;
 	}
 
 	@RequestMapping(value = "/code/{code}", method = RequestMethod.GET)
-	public AddressIO getAddressByCode(@PathVariable("code") String code) {
-		AddressIO address = addressDTOToIO(addressService.getAddressByCode(code));
+	public AddressIO getAddressByCode(@PathVariable("authtoken") String authToken, @PathVariable("code") String code) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		AddressIO address = addressDTOToIO(addressService.getAddressByCode(authDTO, code));
 		LOG.info("Getting address for Code {} : {}", code, address);
 		return address;
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public AddressIO update(@RequestBody AddressIO addressIO, HttpServletRequest request) throws Exception {
+	public AddressIO update(@PathVariable("authtoken") String authToken, @RequestBody AddressIO addressIO) throws Exception {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
 		LOG.info("Input Address for Save or Update : {}", addressIO);
-		AddressDTO addressDTO = addressService.update(addressIOToDTO(addressIO),request);
+		AddressDTO addressDTO = addressService.update(authDTO, addressIOToDTO(addressIO));
 		return addressDTOToIO(addressDTO);
 	}
 

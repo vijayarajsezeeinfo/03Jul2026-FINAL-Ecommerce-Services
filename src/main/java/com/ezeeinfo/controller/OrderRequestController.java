@@ -2,8 +2,6 @@ package com.ezeeinfo.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +18,7 @@ import com.ezeeinfo.controller.io.ProductIO;
 import com.ezeeinfo.controller.io.UserIOResponse;
 import com.ezeeinfo.dao.NamespaceDAO;
 import com.ezeeinfo.dao.UserDAO;
+import com.ezeeinfo.dto.AuthDTO;
 import com.ezeeinfo.dto.NamespaceDTO;
 import com.ezeeinfo.dto.OrderDTO;
 import com.ezeeinfo.dto.OrderItemDTO;
@@ -28,11 +27,12 @@ import com.ezeeinfo.dto.PaymentDTO;
 import com.ezeeinfo.dto.ProductDTO;
 import com.ezeeinfo.dto.UserDTO;
 import com.ezeeinfo.service.OrderRequestService;
+import com.ezeeinfo.util.TokenUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("{authtoken}/order")
 @Slf4j
 public class OrderRequestController {
 
@@ -48,23 +48,28 @@ public class OrderRequestController {
 	NamespaceDAO namespaceDAO;
 	@Autowired
 	ProductController productController;
+	@Autowired
+	TokenUtil tokenUtil;
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public OrderRequestIO update(@RequestBody OrderRequestIO orderRequestIO, HttpServletRequest request) {
+	public OrderRequestIO update(@PathVariable("authtoken") String authToken, @RequestBody OrderRequestIO orderRequestIO) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
 		log.info("OrderRequestIO : {}", orderRequestIO);
-		OrderRequestDTO dto = orderRequestService.update(orIOToDTO(orderRequestIO), request);
+		OrderRequestDTO dto = orderRequestService.update(authDTO, orIOToDTO(orderRequestIO));
 		log.info("OrderRequest DTO : {}", dto);
 		return orDTOToIO(dto);
 	}
 
 	@RequestMapping(value = "/code/{code}", method = RequestMethod.GET)
-	public OrderRequestIO getOrderByCode(@PathVariable("code") String code) {
-		return orDTOToIO(orderRequestService.getOrderByCode(code));
+	public OrderRequestIO getOrderByCode(@PathVariable("authtoken") String authToken, @PathVariable("code") String code) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		return orDTOToIO(orderRequestService.getOrderByCode(authDTO, code));
 	}
 
 	@RequestMapping(value = "/{namespaceCode}", method = RequestMethod.GET)
-	public List<OrderRequestIO> getAllOrders(@PathVariable("namespaceCode") String namespaceCode) {
-		return orderRequestService.getAllOrders(namespaceCode).stream().map(dto -> orDTOToIO(dto)).toList();
+	public List<OrderRequestIO> getAllOrders(@PathVariable("authtoken") String authToken, @PathVariable("namespaceCode") String namespaceCode) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		return orderRequestService.getAllOrders(authDTO, namespaceCode).stream().map(dto -> orDTOToIO(dto)).toList();
 	}
 
 	public OrderIO orderDTOToIO(OrderDTO orderDTO) {

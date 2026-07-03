@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ProductIO extends BaseIO {
+public class ProductIO extends BaseIO<ProductIO> {
 
 	private String description;
 	private Double price;

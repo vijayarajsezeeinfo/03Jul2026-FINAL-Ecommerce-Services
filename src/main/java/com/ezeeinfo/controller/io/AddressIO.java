@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AddressIO extends BaseIO{
+public class AddressIO extends BaseIO<AddressIO>{
 
 	private String doorNo;
 	private String street;

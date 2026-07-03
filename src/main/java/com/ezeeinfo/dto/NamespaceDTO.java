@@ -7,6 +7,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class NamespaceDTO extends BaseDTO implements Serializable {
+public class NamespaceDTO extends BaseDTO<NamespaceDTO> implements Serializable {/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 }

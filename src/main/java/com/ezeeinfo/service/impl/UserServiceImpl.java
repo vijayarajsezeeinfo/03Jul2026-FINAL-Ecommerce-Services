@@ -2,8 +2,6 @@ package com.ezeeinfo.service.impl;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
 import org.slf4j.Logger;
@@ -31,7 +29,27 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<UserDTO> getAllUsers(String namespaceCode) {
+	public List<UserDTO> getAllUsers(AuthDTO authDTO, String namespaceCode) {
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		// ONLY SAMENAMESPACE USER CAN VIEW
+		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(namespaceCode)) {
+			LOG.info("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW THE USERS IN {}", namespaceCode);
+			throw new ServiceException("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW THE USERS IN " + namespaceCode);
+		}
+
+		if (loggedInUser.getRole().getId() != 1) {
+			LOG.info("EXCEPTION 403: ONLY ADMIN CAN VIEW ALL USERS IN {}", namespaceCode);
+			throw new ServiceException("EXCEPTION 403: ONLY ADMIN CAN VIEW ALL USERS IN " + namespaceCode);
+		}
 
 		Cache<String, List> cache = cacheManager.getCache("userListCache", String.class, List.class);
 		List<UserDTO> users = (List<UserDTO>) cache.get(namespaceCode);
@@ -50,7 +68,25 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDTO getUserByCode(String code) {
+	public UserDTO getUserByCode(AuthDTO authDTO, String code) {
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		// ONLY ADMIN CAN VIEW ANY ADDRESS.
+		// NORMAL USER CAN VIEW ONLY THEIR OWN ADDRESS.
+		if (!loggedInUser.getCode().equalsIgnoreCase(code)) {
+			if (loggedInUser.getRole().getId() != 1) {
+				LOG.info("EXCEPTION 403: ONLY ADMIN / RESPECTIVE USER CAN VIEW");
+				throw new ServiceException("EXCEPTION 403: ONLY ADMIN / RESPECTIVE USER CAN VIEW");
+			}
+		}
 
 		Cache<String, UserDTO> cache = cacheManager.getCache("userCache", String.class, UserDTO.class);
 		UserDTO user = cache.get(code);
@@ -65,17 +101,21 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 
+		// ONLY SAMENAMESPACE USER CAN VIEW
+		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(user.getNamespace().getCode())) {
+			LOG.info("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW THE ADDRESS {}", code);
+			throw new ServiceException("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW THE ADDRESS " + code);
+		}
 		return user;
 	}
 
 	@Override
-	public UserDTO update(UserDTO userDTO, HttpServletRequest request) {
+	public UserDTO update(AuthDTO authDTO, UserDTO userDTO) {
 
 		// HASHING PASSWORD
 		userDTO.setPassword(PasswordUtil.hashPassword(userDTO.getPassword()));
 
 		// SETTING LOGGED IN USER
-		AuthDTO authDTO = (AuthDTO) request.getAttribute("auth");
 		if (authDTO == null) {
 			LOG.info("Login not done. So AuthDTO is null");
 			throw new ServiceException("Please Login First");
@@ -102,6 +142,12 @@ public class UserServiceImpl implements UserService {
 				if (userDTO.getUpdatedBy().getRole().getId() != 1) {
 					throw new ServiceException("EXCEPTION 403: ONLY ADMIN CAN CHANGE THE ROLE");
 				}
+			}
+
+			// ONLY ADMIN CAN UPDATE ANY USER.
+			// NORMAL USER CAN UPDATE ONLY THEIR OWN PROFILE.
+			if (loggedInUser.getRole().getId() != 1 && !loggedInUser.getCode().equalsIgnoreCase(dbUser.getCode())) {
+				throw new ServiceException("EXCEPTION 403: YOU CAN UPDATE ONLY YOUR OWN PROFILE");
 			}
 		}
 

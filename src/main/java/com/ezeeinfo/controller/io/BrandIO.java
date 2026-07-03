@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class BrandIO extends BaseIO {
+public class BrandIO extends BaseIO<BrandIO> {
 
 	private NamespaceIO namespace;
 }

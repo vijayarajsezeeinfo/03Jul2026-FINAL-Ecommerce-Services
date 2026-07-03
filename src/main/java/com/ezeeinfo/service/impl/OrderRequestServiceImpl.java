@@ -2,8 +2,6 @@ package com.ezeeinfo.service.impl;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +28,36 @@ public class OrderRequestServiceImpl implements OrderRequestService {
 	private static final Logger LOG = LoggerFactory.getLogger(OrderRequestServiceImpl.class);
 
 	@Override
-	public OrderRequestDTO getOrderByCode(String code) {
-		return orderDAO.getOrderByCode(code);
+	public OrderRequestDTO getOrderByCode(AuthDTO authDTO, String code) {
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+		OrderRequestDTO orderRequestDTO = orderDAO.getOrderByCode(code);
+
+		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(orderRequestDTO.getOrder().getNamespace().getCode())) {
+			LOG.info("EXCEPTION 403: ONLY RESPECTIVE NAMESPACE ADMIN CAN VIEW ORDER");
+			throw new ServiceException("EXCEPTION 403: ONLY RESPECTIVE NAMESPACE ADMIN CAN VIEW ORDER");
+		}
+
+		if (!loggedInUser.getCode().equals(orderRequestDTO.getOrder().getUser().getCode())) {
+			if (loggedInUser.getRole().getId() != 1) {
+				LOG.info("EXCEPTION 403: ONLY RESPECTIVE USER / ADMIN CAN VIEW ORDER");
+				throw new ServiceException("EXCEPTION 403: ONLY RESPECTIVE USER / ADMIN CAN VIEW ORDER");
+			}
+		}
+		return orderRequestDTO;
 	}
 
 	@Override
-	public OrderRequestDTO update(OrderRequestDTO orderRequestDTO, HttpServletRequest request) {
+	public OrderRequestDTO update(AuthDTO authDTO, OrderRequestDTO orderRequestDTO) {
 		LOG.info("OrderRequest DTO : {}", orderRequestDTO);
-		AuthDTO authDTO = (AuthDTO) request.getAttribute("auth");
-
 		if (authDTO == null) {
 			LOG.info("Login not done. So AuthDTO is null");
 			throw new ServiceException("Please Login First");
@@ -79,8 +98,27 @@ public class OrderRequestServiceImpl implements OrderRequestService {
 	}
 
 	@Override
-	public List<OrderRequestDTO> getAllOrders(String namespaceCode) {
+	public List<OrderRequestDTO> getAllOrders(AuthDTO authDTO, String namespaceCode) {
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
 
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(namespaceCode)) {
+			LOG.info("EXCEPTION 403: ONLY RESPECTIVE NAMESPACE ADMIN CAN VIEW ALL ORDERS");
+			throw new ServiceException("EXCEPTION 403: ONLY RESPECTIVE NAMESPACE ADMIN CAN VIEW ALL ORDERS");
+		}
+
+		if (loggedInUser.getRole().getId() != 1) {
+			LOG.info("EXCEPTION 403: ONLY RESPECTIVE ADMIN CAN VIEW ALL ORDERS");
+			throw new ServiceException("EXCEPTION 403: ONLY RESPECTIVE ADMIN CAN VIEW ALL ORDERS");
+		}
 		return orderDAO.getAllOrders(namespaceCode);
 	}
 

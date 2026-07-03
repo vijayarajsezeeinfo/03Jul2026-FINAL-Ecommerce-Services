@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserIO extends BaseIO {
+public class UserIO extends BaseIO<UserIO> {
 
 	private String username;
 	private String password;

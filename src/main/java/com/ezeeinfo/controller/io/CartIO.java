@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class CartIO extends BaseIO {
+public class CartIO extends BaseIO<CartIO> {
 
 	private UserIOResponse user;
 	private NamespaceIO namespace;

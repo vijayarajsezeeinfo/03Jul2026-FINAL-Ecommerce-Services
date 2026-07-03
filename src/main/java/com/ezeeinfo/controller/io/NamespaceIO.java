@@ -5,6 +5,6 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class NamespaceIO extends BaseIO{
-	
+public class NamespaceIO extends BaseIO<NamespaceIO> {
+
 }

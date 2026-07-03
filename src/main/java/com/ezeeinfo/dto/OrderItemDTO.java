@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OrderItemDTO extends BaseDTO {
+public class OrderItemDTO extends BaseDTO<OrderItemDTO> {
 
 	private OrderDTO order;
 	private ProductDTO product;

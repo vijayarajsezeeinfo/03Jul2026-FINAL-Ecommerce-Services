@@ -2,17 +2,16 @@ package com.ezeeinfo.service;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.ezeeinfo.dto.AuthDTO;
 import com.ezeeinfo.dto.ProductDTO;
 
 public interface ProductService {
 
-	List<ProductDTO> getAllProducts(String namespaceCode);
+	List<ProductDTO> getAllProducts(AuthDTO authDTO, String namespaceCode);
 
-	ProductDTO getProductByCode(String code);
+	ProductDTO getProductByCode(AuthDTO authDTO, String code);
 
-	ProductDTO update(ProductDTO productDTO,  HttpServletRequest request);
+	ProductDTO update(AuthDTO authDTO, ProductDTO productDTO);
 
-	List<ProductDTO> getProductsByNamePriceAndNamespace(String name, Double price, String namespaceCode);
+	List<ProductDTO> getProductsByNamePriceAndNamespace(AuthDTO authDTO, String name, Double price, String namespaceCode);
 }

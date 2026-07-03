@@ -2,8 +2,6 @@ package com.ezeeinfo.service.impl;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,21 +25,69 @@ public class ProductServiceImpl implements ProductService {
 	private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	@Override
-	public List<ProductDTO> getAllProducts(String namespaceCode) {
-		// TODO Auto-generated method stub
+	public List<ProductDTO> getAllProducts(AuthDTO authDTO, String namespaceCode) {
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+		if (!namespaceCode.equals(loggedInUser.getNamespace().getCode())) {
+			LOG.info("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW PRODUCTS");
+			throw new ServiceException("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW PRODUCTS");
+		}
 		return productDAO.getAllProducts(namespaceCode);
 	}
 
 	@Override
-	public ProductDTO getProductByCode(String code) {
-		// TODO Auto-generated method stub
-		return productDAO.getProductByCode(code);
+	public ProductDTO getProductByCode(AuthDTO authDTO, String code) {
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+		ProductDTO productDTO = productDAO.getProductByCode(code);
+
+		if (!productDTO.getNamespace().getCode().equals(loggedInUser.getNamespace().getCode())) {
+			LOG.info("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW PRODUCTS");
+			throw new ServiceException("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW PRODUCTS");
+		}
+		return productDTO;
 	}
 
 	@Override
-	public ProductDTO update(ProductDTO productDTO, HttpServletRequest request) {
+	public List<ProductDTO> getProductsByNamePriceAndNamespace(AuthDTO authDTO, String name, Double price, String namespaceCode) {
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
 
-		AuthDTO authDTO = (AuthDTO) request.getAttribute("auth");
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		if (!namespaceCode.equals(loggedInUser.getNamespace().getCode())) {
+			LOG.info("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW PRODUCTS");
+			throw new ServiceException("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW PRODUCTS");
+		}
+
+		LOG.info("Getting products by NAME, PRICE and NAMESPACE");
+		return productDAO.getProductsByNamePriceAndNamespace(name, price, namespaceCode);
+	}
+
+	@Override
+	public ProductDTO update(AuthDTO authDTO, ProductDTO productDTO) {
 
 		if (authDTO == null) {
 			LOG.info("Login not done. So AuthDTO is null");
@@ -57,20 +103,15 @@ public class ProductServiceImpl implements ProductService {
 		LOG.info("product dto: {}", productDTO);
 
 		if (!productDTO.getNamespace().getCode().equals(loggedInUser.getNamespace().getCode())) {
+			LOG.info("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN SAVE/MODIFY PRODUCT");
 			throw new ServiceException("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN SAVE/MODIFY PRODUCT");
 		}
 
 		if (loggedInUser.getRole().getId() != 1) {
+			LOG.info("EXCEPTION 403: ONLY ADMIN CAN SAVE/MODIFY PRODUCT");
 			throw new ServiceException("EXCEPTION 403: ONLY ADMIN CAN SAVE/MODIFY PRODUCT");
 		}
 		return productDAO.update(productDTO);
-	}
-
-	@Override
-	public List<ProductDTO> getProductsByNamePriceAndNamespace(String name, Double price, String namespaceCode) {
-		// TODO Auto-generated method stub
-		LOG.info("Getting products by NAME, PRICE and NAMESPACE");
-		return productDAO.getProductsByNamePriceAndNamespace(name, price, namespaceCode);
 	}
 
 }

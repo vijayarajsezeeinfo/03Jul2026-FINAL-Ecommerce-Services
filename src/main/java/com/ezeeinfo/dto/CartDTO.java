@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class CartDTO extends BaseDTO {
+public class CartDTO extends BaseDTO<CartDTO> {
 
 	private UserDTO user;
 	private NamespaceDTO namespace;

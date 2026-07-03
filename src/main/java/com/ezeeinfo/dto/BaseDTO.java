@@ -3,7 +3,7 @@ package com.ezeeinfo.dto;
 import lombok.Data;
 
 @Data
-public class BaseDTO {
+public class BaseDTO<T> {
 	private Integer id;
 	private String code;
 	private String name;

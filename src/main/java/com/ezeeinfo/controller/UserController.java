@@ -2,8 +2,6 @@ package com.ezeeinfo.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +15,14 @@ import com.ezeeinfo.controller.io.NamespaceIO;
 import com.ezeeinfo.controller.io.UserIO;
 import com.ezeeinfo.controller.io.UserIOResponse;
 import com.ezeeinfo.dao.NamespaceDAO;
+import com.ezeeinfo.dto.AuthDTO;
 import com.ezeeinfo.dto.NamespaceDTO;
 import com.ezeeinfo.dto.UserDTO;
 import com.ezeeinfo.service.UserService;
+import com.ezeeinfo.util.TokenUtil;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("{authtoken}/user")
 public class UserController {
 
 	@Autowired
@@ -31,24 +31,29 @@ public class UserController {
 	NamespaceDAO namespaceDAO;
 	@Autowired
 	NamespaceController namespaceController;
+	@Autowired
+	TokenUtil tokenUtil;
 
 	private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
 	@RequestMapping(value = "/{namespaceCode}", method = RequestMethod.GET)
-	public List<UserIOResponse> getAllUsers(@PathVariable("namespaceCode") String namespaceCode) {
-		return userService.getAllUsers(namespaceCode).stream().map(dto -> userDTOToIO(dto)).toList();
+	public List<UserIOResponse> getAllUsers(@PathVariable("authtoken") String authToken, @PathVariable("namespaceCode") String namespaceCode) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		return userService.getAllUsers(authDTO, namespaceCode).stream().map(dto -> userDTOToIO(dto)).toList();
 	}
 
 	@RequestMapping(value = "/code/{code}", method = RequestMethod.GET)
-	public UserIOResponse getUserByCode(@PathVariable("code") String code) throws Exception {
-		return userDTOToIO(userService.getUserByCode(code));
+	public UserIOResponse getUserByCode(@PathVariable("authtoken") String authToken, @PathVariable("code") String code) throws Exception {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		return userDTOToIO(userService.getUserByCode(authDTO, code));
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public UserIOResponse update(@RequestBody UserIO userIO, HttpServletRequest request) {
-		LOG.info("Input USER : {}",userIO);
-		UserDTO userDTO = userService.update(userIOToDTO(userIO),request);
-		return userDTOToIO(userDTO);
+	public UserIOResponse update(@PathVariable("authtoken") String authToken, @RequestBody UserIO userIO) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		LOG.info("Input USER : {}", userIO);
+		UserDTO userDTO2 = userService.update(authDTO, userIOToDTO(userIO));
+		return userDTOToIO(userDTO2);
 	}
 
 	public UserIOResponse userDTOToIO(UserDTO userDTO) {

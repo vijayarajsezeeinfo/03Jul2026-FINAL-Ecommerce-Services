@@ -2,15 +2,14 @@ package com.ezeeinfo.service;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.ezeeinfo.dto.AddressDTO;
+import com.ezeeinfo.dto.AuthDTO;
 
 public interface AddressService {
 
-	List<AddressDTO> getAllAddresses(String namespaceCode);
+	List<AddressDTO> getAllAddresses(AuthDTO authDTO, String namespaceCode);
 
-	AddressDTO getAddressByCode(String code);
+	AddressDTO getAddressByCode(AuthDTO authDTO, String code);
 
-	AddressDTO update(AddressDTO addressDTO, HttpServletRequest request);
+	AddressDTO update(AuthDTO authDTO, AddressDTO addressDTO);
 }

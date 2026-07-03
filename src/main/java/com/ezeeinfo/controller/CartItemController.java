@@ -2,12 +2,14 @@ package com.ezeeinfo.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ezeeinfo.controller.io.CartIO;
 import com.ezeeinfo.controller.io.CartItemIO;
@@ -15,19 +17,21 @@ import com.ezeeinfo.controller.io.NamespaceIO;
 import com.ezeeinfo.controller.io.ProductIO;
 import com.ezeeinfo.controller.io.UserIOResponse;
 import com.ezeeinfo.dao.UserDAO;
+import com.ezeeinfo.dto.AuthDTO;
 import com.ezeeinfo.dto.CartDTO;
 import com.ezeeinfo.dto.CartItemDTO;
 import com.ezeeinfo.dto.NamespaceDTO;
 import com.ezeeinfo.dto.ProductDTO;
 import com.ezeeinfo.dto.UserDTO;
 import com.ezeeinfo.service.CartItemService;
+import com.ezeeinfo.util.TokenUtil;
 
 @RestController
-@RequestMapping("/cart-item")
+@RequestMapping("{authtoken}/cart-item")
 public class CartItemController {
 
 	@Autowired
-	private CartItemService cartItemService;
+	CartItemService cartItemService;
 	@Autowired
 	UserController userController;
 	@Autowired
@@ -36,22 +40,27 @@ public class CartItemController {
 	NamespaceController namespaceController;
 	@Autowired
 	ProductController productController;
+	@Autowired
+	TokenUtil tokenUtil;
 
 	private static final Logger LOG = LoggerFactory.getLogger(CartItemController.class);
 
 	@RequestMapping(value = "/{namespaceCode}", method = RequestMethod.GET)
-	public List<CartItemIO> getAllCartItems(@PathVariable("namespaceCode") String namespaceCode) {
-		return cartItemService.getAllCartItems(namespaceCode).stream().map(dto -> cartItemDTOToIO(dto)).toList();
+	public List<CartItemIO> getAllCartItems(@PathVariable("authtoken") String authToken, @PathVariable("namespaceCode") String namespaceCode) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		return cartItemService.getAllCartItems(authDTO, namespaceCode).stream().map(dto -> cartItemDTOToIO(dto)).toList();
 	}
 
 	@RequestMapping(value = "/code/{code}", method = RequestMethod.GET)
-	public CartItemIO getCartItemByCode(@PathVariable String code) {
-		return cartItemDTOToIO(cartItemService.getCartItemByCode(code));
+	public CartItemIO getCartItemByCode(@PathVariable("authtoken") String authToken, @PathVariable String code) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		return cartItemDTOToIO(cartItemService.getCartItemByCode(authDTO, code));
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public CartItemIO update(@RequestBody CartItemIO io, HttpServletRequest request) throws Exception {
-		return cartItemDTOToIO(cartItemService.update(cartItemIOToDTO(io),request));
+	public CartItemIO update(@PathVariable("authtoken") String authToken, @RequestBody CartItemIO io) throws Exception {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		return cartItemDTOToIO(cartItemService.update(authDTO, cartItemIOToDTO(io)));
 	}
 
 	public CartItemIO cartItemDTOToIO(CartItemDTO dto) {

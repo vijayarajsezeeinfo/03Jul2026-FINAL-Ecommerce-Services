@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OrderItemIO extends BaseIO {
+public class OrderItemIO extends BaseIO<OrderItemIO> {
 	private OrderIO order;
 	private ProductIO product;
 	private Integer quantity;

@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class CartItemIO extends BaseIO {
+public class CartItemIO extends BaseIO<CartItemIO> {
 
 	private CartIO cart;
 	private ProductIO product;

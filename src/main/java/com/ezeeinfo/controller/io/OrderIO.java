@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OrderIO extends BaseIO {
+public class OrderIO extends BaseIO<OrderIO> {
 
 	private UserIOResponse user;
 	private OrderStatusEM orderStatus;

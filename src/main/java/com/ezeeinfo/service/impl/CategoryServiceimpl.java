@@ -2,8 +2,6 @@ package com.ezeeinfo.service.impl;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,21 +26,45 @@ public class CategoryServiceimpl implements CategoryService {
 	private static final Logger LOG = LoggerFactory.getLogger(CategoryServiceimpl.class);
 
 	@Override
-	public List<CategoryDTO> getAllCategories(String namespaceCode) {
-		// TODO Auto-generated method stub
+	public List<CategoryDTO> getAllCategories(AuthDTO authDTO, String namespaceCode) {
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(namespaceCode)) {
+			throw new ServiceException("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW CATEGORY");
+		}
 		return categoryDAO.getAllCategories(namespaceCode);
 	}
 
 	@Override
-	public CategoryDTO getCategoryByCode(String code) {
-		// TODO Auto-generated method stub
-		return categoryDAO.getCategoryByCode(code);
+	public CategoryDTO getCategoryByCode(AuthDTO authDTO, String code) {
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+
+		CategoryDTO categoryDTO = categoryDAO.getCategoryByCode(code);
+
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(categoryDTO.getNamespace().getCode())) {
+			throw new ServiceException("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW CATEGORY");
+		}
+		return categoryDTO;
 	}
 
 	@Override
-	public CategoryDTO update(CategoryDTO categoryDTO, HttpServletRequest request) {
-		AuthDTO authDTO = (AuthDTO) request.getAttribute("auth");
-
+	public CategoryDTO update(AuthDTO authDTO, CategoryDTO categoryDTO) {
 		if (authDTO == null) {
 			LOG.info("Login not done. So AuthDTO is null");
 			throw new ServiceException("Please Login First");

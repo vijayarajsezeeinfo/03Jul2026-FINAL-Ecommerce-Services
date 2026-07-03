@@ -1,5 +1,6 @@
 package com.ezeeinfo.controller;
 
+import org.ehcache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,23 +10,32 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ezeeinfo.controller.io.LoginRequestIO;
 import com.ezeeinfo.controller.io.LoginResponseIO;
 import com.ezeeinfo.dao.UserDAO;
-import com.ezeeinfo.dto.UserDTO;
-import com.ezeeinfo.util.JwtUtil;
+import com.ezeeinfo.dto.LoginRequestDTO;
+import com.ezeeinfo.dto.LoginResponseDTO;
+import com.ezeeinfo.service.AuthService;
 
 @RestController
 @RequestMapping("/login")
-public class LoginController {
+public class AuthController {
 	@Autowired
 	UserDAO userDAO;
+	@Autowired
+	CacheManager cacheManager;
+	@Autowired
+	AuthService authService;
 
 	@RequestMapping(method = RequestMethod.POST)
 	public LoginResponseIO login(@RequestBody LoginRequestIO request) {
-		UserDTO userDTO = userDAO.login(request.getUserCode(), request.getUsername(), request.getPassword(), request.getNamespaceCode());
 
-		String token = JwtUtil.generateToken(userDTO);
+		LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
+		loginRequestDTO.setUserCode(request.getUserCode());
+		loginRequestDTO.setUsername(request.getUsername());
+		loginRequestDTO.setPassword(request.getPassword());
+		loginRequestDTO.setNamespaceCode(request.getNamespaceCode());
 
+		LoginResponseDTO loginResponseDTO = authService.login(loginRequestDTO);
 		LoginResponseIO loginResponseIO = new LoginResponseIO();
-		loginResponseIO.setToken(token);
+		loginResponseIO.setToken(loginResponseDTO.getToken());
 		return loginResponseIO;
 	}
 

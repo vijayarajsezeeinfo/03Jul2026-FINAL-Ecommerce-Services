@@ -2,16 +2,15 @@ package com.ezeeinfo.service;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.ezeeinfo.dto.AuthDTO;
 import com.ezeeinfo.dto.CategoryDTO;
 
 public interface CategoryService {
 
-	List<CategoryDTO> getAllCategories(String namespaceCode);
+	List<CategoryDTO> getAllCategories(AuthDTO authDTO, String namespaceCode);
 
-	CategoryDTO getCategoryByCode(String code);
+	CategoryDTO getCategoryByCode(AuthDTO authDTO, String code);
 
-	CategoryDTO update(CategoryDTO categoryDTO, HttpServletRequest request);
+	CategoryDTO update(AuthDTO authDTO, CategoryDTO categoryDTO);
 
 }

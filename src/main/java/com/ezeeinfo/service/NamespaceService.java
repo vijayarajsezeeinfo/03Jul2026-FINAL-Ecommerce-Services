@@ -2,16 +2,15 @@ package com.ezeeinfo.service;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.ezeeinfo.dto.AuthDTO;
 import com.ezeeinfo.dto.NamespaceDTO;
 
 public interface NamespaceService {
 
-	List<NamespaceDTO> getAllNamespaces();
+	List<NamespaceDTO> getAllNamespaces(AuthDTO authDTO);
 
-	NamespaceDTO getNamespaceByCode(String code);
+	NamespaceDTO getNamespaceByCode(AuthDTO authDTO, String code);
 
-	NamespaceDTO update(NamespaceDTO namespaceDTO, HttpServletRequest request);
+	NamespaceDTO update(AuthDTO authDTO, NamespaceDTO namespaceDTO);
 
 }

@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AddressDTO extends BaseDTO{
+public class AddressDTO extends BaseDTO<AddressDTO> {
 
 	private String doorNo;
 	private String street;

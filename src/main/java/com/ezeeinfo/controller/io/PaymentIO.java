@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PaymentIO extends BaseIO {
+public class PaymentIO extends BaseIO<PaymentIO> {
 	private OrderIO order;
 	private PaymentModeEM paymentMode;
 	private Double totalAmountToPay;

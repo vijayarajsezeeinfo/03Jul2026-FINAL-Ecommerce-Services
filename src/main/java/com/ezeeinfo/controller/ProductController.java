@@ -2,8 +2,6 @@ package com.ezeeinfo.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +17,16 @@ import com.ezeeinfo.controller.io.BrandIO;
 import com.ezeeinfo.controller.io.CategoryIO;
 import com.ezeeinfo.controller.io.NamespaceIO;
 import com.ezeeinfo.controller.io.ProductIO;
+import com.ezeeinfo.dto.AuthDTO;
 import com.ezeeinfo.dto.BrandDTO;
 import com.ezeeinfo.dto.CategoryDTO;
 import com.ezeeinfo.dto.NamespaceDTO;
 import com.ezeeinfo.dto.ProductDTO;
 import com.ezeeinfo.service.ProductService;
+import com.ezeeinfo.util.TokenUtil;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("{authtoken}/product")
 public class ProductController {
 
 	@Autowired
@@ -37,29 +37,35 @@ public class ProductController {
 	CategoryController categoryController;
 	@Autowired
 	BrandController brandController;
+	@Autowired
+	TokenUtil tokenUtil;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
 
 	@RequestMapping(value = "/{namespaceCode}", method = RequestMethod.GET)
-	public List<ProductIO> getAllProducts(@PathVariable("namespaceCode") String namespaceCode) {
-		return productService.getAllProducts(namespaceCode).stream().map(dto -> productDTOToIO(dto)).toList();
+	public List<ProductIO> getAllProducts(@PathVariable("authtoken") String authToken, @PathVariable("namespaceCode") String namespaceCode) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		return productService.getAllProducts(authDTO, namespaceCode).stream().map(dto -> productDTOToIO(dto)).toList();
 	}
 
 	@RequestMapping(value = "/code/{code}", method = RequestMethod.GET)
-	public ProductIO getProductById(@PathVariable("code") String code) {
-		return productDTOToIO(productService.getProductByCode(code));
+	public ProductIO getProductById(@PathVariable("authtoken") String authToken, @PathVariable("code") String code) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
+		return productDTOToIO(productService.getProductByCode(authDTO, code));
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public ProductIO update(@RequestBody ProductIO productIO, HttpServletRequest request) {
+	public ProductIO update(@PathVariable("authtoken") String authToken, @RequestBody ProductIO productIO) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
 		LOG.info("Input Product for Save or Update : {}", productIO);
-		return productDTOToIO(productService.update(productIOToDTO(productIO), request));
+		return productDTOToIO(productService.update(authDTO, productIOToDTO(productIO)));
 	}
 
 	@GetMapping("/filter")
-	public List<ProductIO> getProductsByNamePriceAndNamespace(@RequestParam String name, @RequestParam Double price, @RequestParam String namespaceCode) {
+	public List<ProductIO> getProductsByNamePriceAndNamespace(@PathVariable("authtoken") String authToken, @RequestParam String name, @RequestParam Double price, @RequestParam String namespaceCode) {
+		AuthDTO authDTO = tokenUtil.getAuthDTO(authToken);
 		LOG.info("Getting products by NAME, PRICE and NAMESPACE");
-		List<ProductDTO> productDTOs = productService.getProductsByNamePriceAndNamespace(name, price, namespaceCode);
+		List<ProductDTO> productDTOs = productService.getProductsByNamePriceAndNamespace(authDTO, name, price, namespaceCode);
 		List<ProductIO> productIOs = productDTOs.stream().map(dto -> productDTOToIO(dto)).toList();
 		return productIOs;
 	}

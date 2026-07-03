@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OrderDTO extends BaseDTO {
+public class OrderDTO extends BaseDTO<OrderDTO> {
 	private UserDTO user;
 	private OrderStatusEM orderStatus;
 	private Double totalAmount;

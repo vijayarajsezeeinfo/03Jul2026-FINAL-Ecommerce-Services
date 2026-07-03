@@ -2,8 +2,6 @@ package com.ezeeinfo.service.impl;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,21 +25,49 @@ public class BrandServiceImpl implements BrandService {
 	private static final Logger LOG = LoggerFactory.getLogger(BrandServiceImpl.class);
 
 	@Override
-	public List<BrandDTO> getAllBrands(String namespaceCode) {
-		// TODO Auto-generated method stub
+	public List<BrandDTO> getAllBrands(AuthDTO authDTO, String namespaceCode) {
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(namespaceCode)) {
+			LOG.info("EXCEPTION 403: ONLY USER FROM {} CAN VIEW ALL", namespaceCode);
+			throw new ServiceException("EXCEPTION 403: ONLY USER FROM " + namespaceCode + " CAN VIEW ALL");
+		}
+
 		return brandDAO.getAllBrands(namespaceCode);
 	}
 
 	@Override
-	public BrandDTO getBrandByCode(String code) {
-		// TODO Auto-generated method stub
-		return brandDAO.getBrandByCode(code);
+	public BrandDTO getBrandByCode(AuthDTO authDTO, String code) {
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		BrandDTO brandDTO = brandDAO.getBrandByCode(code);
+
+		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(brandDTO.getNamespace().getCode())) {
+			LOG.info("EXCEPTION 403:  ONLY USER FROM {} CAN VIEW ALL", brandDTO.getNamespace().getCode());
+			throw new ServiceException("EXCEPTION 403: ONLY USER FROM " + brandDTO.getNamespace().getCode() + " CAN VIEW");
+		}
+
+		return brandDTO;
 	}
 
 	@Override
-	public BrandDTO update(BrandDTO brandDTO, HttpServletRequest request) {
-		AuthDTO authDTO = (AuthDTO) request.getAttribute("auth");
-
+	public BrandDTO update(AuthDTO authDTO, BrandDTO brandDTO) {
 		if (authDTO == null) {
 			LOG.info("Login not done. So AuthDTO is null");
 			throw new ServiceException("Please Login First");

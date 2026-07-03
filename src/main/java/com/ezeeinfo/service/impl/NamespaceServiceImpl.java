@@ -2,8 +2,6 @@ package com.ezeeinfo.service.impl;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,22 @@ public class NamespaceServiceImpl implements NamespaceService {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<NamespaceDTO> getAllNamespaces() {
+	public List<NamespaceDTO> getAllNamespaces(AuthDTO authDTO) {
+
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		if (loggedInUser.getRole().getId() != 0) {
+			throw new ServiceException("EXCEPTION 403: ONLY SUPER ADMIN HAS ACCESS TO VIEW");
+		}
 
 		List<NamespaceDTO> namespaces = (List<NamespaceDTO>) redisTemplate.opsForValue().get("ALL_NAMESPACES");
 		if (namespaces != null) {
@@ -51,7 +64,22 @@ public class NamespaceServiceImpl implements NamespaceService {
 	}
 
 	@Override
-	public NamespaceDTO getNamespaceByCode(String code) {
+	public NamespaceDTO getNamespaceByCode(AuthDTO authDTO, String code) {
+
+		if (authDTO == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+		if (authDTO.getUser().getId() == null) {
+			LOG.info("Login not done. So AuthDTO is null");
+			throw new ServiceException("Please Login First");
+		}
+
+		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		if (loggedInUser.getRole().getId() != 0) {
+			throw new ServiceException("EXCEPTION 403: ONLY SUPER ADMIN HAS ACCESS TO VIEW");
+		}
 
 		NamespaceDTO namespace = (NamespaceDTO) redisTemplate.opsForValue().get(code);
 		if (namespace != null) {
@@ -69,9 +97,7 @@ public class NamespaceServiceImpl implements NamespaceService {
 	}
 
 	@Override
-	public NamespaceDTO update(NamespaceDTO namespaceDTO, HttpServletRequest request) {
-
-		AuthDTO authDTO = (AuthDTO) request.getAttribute("auth");
+	public NamespaceDTO update(AuthDTO authDTO, NamespaceDTO namespaceDTO) {
 
 		if (authDTO == null) {
 			LOG.info("Login not done. So AuthDTO is null");

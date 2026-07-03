@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PaymentDTO extends BaseDTO {
+public class PaymentDTO extends BaseDTO<PaymentDTO> {
 	private OrderDTO order;
 	private PaymentModeEM paymentMode;
 	private Double totalAmountToPay;
