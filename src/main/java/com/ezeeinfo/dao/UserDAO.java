@@ -31,7 +31,7 @@ public class UserDAO {
 	private static final Logger LOG = LoggerFactory.getLogger(UserDAO.class);
 
 	public List<UserDTO> getAllUsers(String namespaceCode) {
-		String sql = "SELECT u.id AS user_id, u.code AS user_code, u.username AS user_username, u.password AS user_password, u.email AS user_email, u.mobile AS user_mobile, u.role AS user_role, u.namespace_id AS user_namespace_id, u.active_flag AS user_active_flag, u.updated_by AS user_updated_by FROM user u LEFT JOIN namespace n ON u.namespace_id = n.id WHERE u.active_flag < 2 AND n.code = ? ORDER BY u.id";
+		String sql = "SELECT u.id AS user_id, u.code AS user_code, u.username AS user_username, u.token AS user_token, u.email AS user_email, u.mobile AS user_mobile, u.role AS user_role, u.namespace_id AS user_namespace_id, u.active_flag AS user_active_flag, u.updated_by AS user_updated_by FROM user u LEFT JOIN namespace n ON u.namespace_id = n.id WHERE u.active_flag < 2 AND n.code = ? ORDER BY u.id";
 		List<UserDTO> userDTOs = new ArrayList<UserDTO>();
 		try (Connection connection = DBConfig.getInstance().getConnection(); PreparedStatement statement = connection.prepareStatement(sql);) {
 			statement.setString(1, namespaceCode);
@@ -45,7 +45,7 @@ public class UserDAO {
 					userDTO.setId(rs.getInt("user_id"));
 					userDTO.setCode(rs.getString("user_code"));
 					userDTO.setUsername(rs.getString("user_username"));
-					userDTO.setPassword(rs.getString("user_password"));
+					userDTO.setPassword(rs.getString("user_token"));
 					userDTO.setEmail(rs.getString("user_email"));
 					userDTO.setMobile(rs.getString("user_mobile"));
 					userDTO.setRole(UserRoleEM.getUserRoleEM(rs.getInt("user_role")));
@@ -68,7 +68,7 @@ public class UserDAO {
 	}
 
 	public UserDTO getUserByCode(String code) {
-		String sql = "SELECT u.id AS user_id, u.code AS user_code, u.username AS user_username, u.password AS user_password, u.email AS user_email, u.mobile AS user_mobile, u.role AS user_role, u.namespace_id AS user_namespace_id, u.active_flag AS user_active_flag, u.updated_by AS user_updated_by, n.code AS namespace_code FROM user u LEFT JOIN namespace n ON u.namespace_id = n.id WHERE u.active_flag < 2 AND u.code=?";
+		String sql = "SELECT u.id AS user_id, u.code AS user_code, u.username AS user_username, u.token AS user_token, u.email AS user_email, u.mobile AS user_mobile, u.role AS user_role, u.namespace_id AS user_namespace_id, u.active_flag AS user_active_flag, u.updated_by AS user_updated_by, n.code AS namespace_code FROM user u LEFT JOIN namespace n ON u.namespace_id = n.id WHERE u.active_flag < 2 AND u.code=?";
 		UserDTO userDTO = null;
 		try (Connection connection = DBConfig.getInstance().getConnection(); PreparedStatement statement = connection.prepareStatement(sql);) {
 			statement.setString(1, code);
@@ -82,7 +82,7 @@ public class UserDAO {
 				userDTO.setId(rs.getInt("user_id"));
 				userDTO.setCode(rs.getString("user_code"));
 				userDTO.setUsername(rs.getString("user_username"));
-				userDTO.setPassword(rs.getString("user_password"));
+				userDTO.setPassword(rs.getString("user_token"));
 				userDTO.setEmail(rs.getString("user_email"));
 				userDTO.setMobile(rs.getString("user_mobile"));
 				userDTO.setRole(UserRoleEM.getUserRoleEM(rs.getInt("user_role")));
@@ -99,7 +99,7 @@ public class UserDAO {
 	}
 
 	public UserDTO getUserByCodeInternal(String code) {
-		String sql = "SELECT u.id AS user_id, u.code AS user_code, u.username AS user_username, u.password AS user_password, u.email AS user_email, u.mobile AS user_mobile, u.role AS user_role, u.namespace_id AS user_namespace_id, u.active_flag AS user_active_flag, u.updated_by AS user_updated_by, n.code AS namespace_code FROM user u LEFT JOIN namespace n ON u.namespace_id = n.id WHERE u.code=?";
+		String sql = "SELECT u.id AS user_id, u.code AS user_code, u.username AS user_username, u.token AS user_token, u.email AS user_email, u.mobile AS user_mobile, u.role AS user_role, u.namespace_id AS user_namespace_id, u.active_flag AS user_active_flag, u.updated_by AS user_updated_by, n.code AS namespace_code FROM user u LEFT JOIN namespace n ON u.namespace_id = n.id WHERE u.code=?";
 		UserDTO userDTO = null;
 		try (Connection connection = DBConfig.getInstance().getConnection(); PreparedStatement statement = connection.prepareStatement(sql);) {
 			statement.setString(1, code);
@@ -113,7 +113,7 @@ public class UserDAO {
 				userDTO.setId(rs.getInt("user_id"));
 				userDTO.setCode(rs.getString("user_code"));
 				userDTO.setUsername(rs.getString("user_username"));
-				userDTO.setPassword(rs.getString("user_password"));
+				userDTO.setPassword(rs.getString("user_token"));
 				userDTO.setEmail(rs.getString("user_email"));
 				userDTO.setMobile(rs.getString("user_mobile"));
 				userDTO.setRole(UserRoleEM.getUserRoleEM(rs.getInt("user_role")));
@@ -162,7 +162,7 @@ public class UserDAO {
 	}
 
 	public UserDTO getUser(Integer id) {
-		String sql = "SELECT usr.id AS user_id, usr.code AS user_code, usr.username AS user_username, usr.namespace_id AS user_namespace_id, usr.password AS user_password, usr.email AS user_email, usr.mobile AS user_mobile, usr.role AS user_role, usr.active_flag AS user_active_flag, usr.updated_by AS user_updated_by, ub.id AS updated_user_id, ub.code AS updated_user_code, ub.username AS updated_user_username, ub.namespace_id AS updated_user_namespace_id, ub.password AS updated_user_password, ub.email AS updated_user_email, ub.mobile AS updated_user_mobile, ub.role AS updated_user_role, ub.active_flag AS updated_user_active_flag, ub.updated_by AS updated_user_updated_by FROM `user` usr LEFT JOIN `user` ub ON usr.updated_by = ub.id WHERE usr.id = ?";
+		String sql = "SELECT usr.id AS user_id, usr.code AS user_code, usr.username AS user_username, usr.namespace_id AS user_namespace_id, usr.token AS user_token, usr.email AS user_email, usr.mobile AS user_mobile, usr.role AS user_role, usr.active_flag AS user_active_flag, usr.updated_by AS user_updated_by, ub.id AS updated_user_id, ub.code AS updated_user_code, ub.username AS updated_user_username, ub.namespace_id AS updated_user_namespace_id, ub.token AS updated_user_token, ub.email AS updated_user_email, ub.mobile AS updated_user_mobile, ub.role AS updated_user_role, ub.active_flag AS updated_user_active_flag, ub.updated_by AS updated_user_updated_by FROM `user` usr LEFT JOIN `user` ub ON usr.updated_by = ub.id WHERE usr.id = ?";
 		UserDTO userDTO = null;
 		try (Connection connection = DBConfig.getInstance().getConnection(); PreparedStatement statement = connection.prepareStatement(sql);) {
 			statement.setInt(1, id);
@@ -177,7 +177,7 @@ public class UserDAO {
 				updatedBy.setCode(rs.getString("updated_user_code"));
 				updatedBy.setUsername(rs.getString("updated_user_username"));
 				updatedBy.setNamespace(namespaceDTO);
-				updatedBy.setPassword(rs.getString("updated_user_password"));
+				updatedBy.setPassword(rs.getString("updated_user_token"));
 				updatedBy.setEmail(rs.getString("updated_user_email"));
 				updatedBy.setMobile(rs.getString("updated_user_mobile"));
 				updatedBy.setRole(UserRoleEM.getUserRoleEM(rs.getInt("updated_user_role")));
@@ -188,7 +188,7 @@ public class UserDAO {
 				userDTO.setId(rs.getInt("user_id"));
 				userDTO.setCode(rs.getString("user_code"));
 				userDTO.setUsername(rs.getString("user_username"));
-				userDTO.setPassword(rs.getString("user_password"));
+				userDTO.setPassword(rs.getString("user_token"));
 				userDTO.setEmail(rs.getString("user_email"));
 				userDTO.setMobile(rs.getString("user_mobile"));
 				userDTO.setRole(UserRoleEM.getUserRoleEM(rs.getInt("user_role")));
@@ -209,7 +209,7 @@ public class UserDAO {
 
 	public UserDTO login(String userCode, String username, String password, String namespaceCode) {
 
-		String sql = "SELECT u.id AS user_id , u.code AS user_code, u.username AS user_username, u.namespace_id AS user_namespace_id, u.password AS user_password, u.email AS user_email, mobile AS user_mobile, u.role AS user_role, u.active_flag AS user_active_flag, u.updated_by AS user_updated_by, n.code AS namespace_code FROM `user` u LEFT JOIN namespace n ON u.namespace_id=n.id WHERE u.username =? AND n.code=? AND u.code=? ";
+		String sql = "SELECT u.id AS user_id , u.code AS user_code, u.username AS user_username, u.namespace_id AS user_namespace_id, u.token AS user_token, u.email AS user_email, mobile AS user_mobile, u.role AS user_role, u.active_flag AS user_active_flag, u.updated_by AS user_updated_by, n.code AS namespace_code FROM `user` u LEFT JOIN namespace n ON u.namespace_id=n.id WHERE u.username =? AND n.code=? AND u.code=? ";
 		UserDTO userDTO = null;
 		try (Connection connection = DBConfig.getInstance().getConnection(); PreparedStatement statement = connection.prepareStatement(sql);) {
 			statement.setString(1, username);
@@ -219,7 +219,7 @@ public class UserDAO {
 				if (!rs.next()) {
 					throw new ServiceException("User " + username + " Not Found");
 				}
-				String dbPassword = rs.getString("user_password");
+				String dbPassword = rs.getString("user_token");
 				boolean match = PasswordUtil.ENCODER.matches(password, dbPassword);
 				if (!match) {
 					throw new ServiceException("Invalid Password");
@@ -230,7 +230,7 @@ public class UserDAO {
 				userDTO.setId(rs.getInt("user_id"));
 				userDTO.setCode(rs.getString("user_code"));
 				userDTO.setUsername(rs.getString("user_username"));
-				userDTO.setPassword(rs.getString("user_password"));
+				userDTO.setPassword(rs.getString("user_token"));
 				userDTO.setEmail(rs.getString("user_email"));
 				userDTO.setMobile(rs.getString("user_mobile"));
 				userDTO.setRole(UserRoleEM.getUserRoleEM(rs.getInt("user_role")));

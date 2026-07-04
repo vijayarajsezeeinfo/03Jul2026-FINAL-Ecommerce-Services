@@ -40,7 +40,7 @@ BEGIN
 
         UPDATE `user`
            SET `username` = pcrUserName,
-               `password` = pcrPassword,
+               `token` = pcrPassword,
                `email` = pcrEmail,
                `mobile` = pcrMobile,
                `role` = pitRole,
@@ -80,7 +80,7 @@ BEGIN
         (
             `code`,
             `username`,
-            `password`,
+            `token`,
             `email`,
             `mobile`,
             `role`,

@@ -482,7 +482,7 @@ CREATE TABLE `user` (
   `code` varchar(30) NOT NULL,
   `username` varchar(100) NOT NULL,
   `namespace_id` int NOT NULL,
-  `password` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
   `email` varchar(150) NOT NULL,
   `mobile` varchar(20) NOT NULL,
   `role` tinyint NOT NULL,
@@ -499,11 +499,11 @@ CREATE TABLE `user` (
   KEY `idx_user_username_namespace` (`username`,`namespace_id`),
   CONSTRAINT `fk_users_namespace_id` FOREIGN KEY (`namespace_id`) REFERENCES `namespace` (`id`),
   CONSTRAINT `fk_users_updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Data for the table `user` */
 
-insert  into `user`(`id`,`code`,`username`,`namespace_id`,`password`,`email`,`mobile`,`role`,`active_flag`,`updated_by`,`updated_at`) values 
+insert  into `user`(`id`,`code`,`username`,`namespace_id`,`token`,`email`,`mobile`,`role`,`active_flag`,`updated_by`,`updated_at`) values 
 (1,'SUPER000','super admin',1,'$2a$10$EMi2txPAI3mpUw1oCMFVc.hd8xTOHw8NhU/Mxc2KOvw7Jb4cCdUdC','superadmin@gmail.com','+919361595275',0,1,1,'2026-06-15 12:50:50'),
 (24,'USR54604','prakash',2,'$2a$10$2Chf9JcJNzBQYR.dQfbzaePNtTx8qu84fnQLmcroxRof.dP6aFQji','prakash@gmail.com','+918428578348',1,1,24,'2026-06-15 20:39:57'),
 (25,'USR63991','vicky',3,'$2a$10$8AP5SHu1NvmSxxxwJnQB/OU5h5sT15K29FAyKfTv0AYyM/ToOsV56','vicky@gmail.com','+918610279793',1,1,1,'2026-06-15 13:49:39'),
@@ -516,4 +516,6 @@ insert  into `user`(`id`,`code`,`username`,`namespace_id`,`password`,`email`,`mo
 (32,'USR66109','vinoth',2,'$2a$10$NXin0nnLUcLa.wruQQ.tFexAJR0oaPI2KaWfybAmA5ZEStWktrf4.','vinoth@gmail.com','+918428578354',3,1,1,'2026-06-17 20:00:00'),
 (33,'USR77996','aravind',2,'$2a$10$PK34rMbf3QSpFCAKv4wIVOXpHArMJLRBq5H3B2DoY6g.wb9qMVPyC','aravind@gmail.com','+919428578354',3,1,1,'2026-06-17 20:01:08'),
 (34,'USR35171','arya',3,'$2a$10$V30fRKpUWPFC3Op9jGdGvOT4.F/iWxaw8aHBoR.J9gWGS8PkuWhIy','arya@gmail.com','+917428578354',3,1,26,'2026-06-18 12:05:15'),
-(38,'USR52150','manoje',2,'$2a$10$yGtT2NfGS6HGN5bUUSVooetuhjpzncjFyRLTz6BSt834L.Cd1sYvW','manoju@gmail.com','+917428578311',3,1,24,'2026-06-23 20:02:02');
+(38,'USR52150','manoje',2,'$2a$10$yGtT2NfGS6HGN5bUUSVooetuhjpzncjFyRLTz6BSt834L.Cd1sYvW','manoju@gmail.com','+917428578311',3,1,24,'2026-06-23 20:02:02'),
+(39,'USR19906','pingal',2,'$2a$10$4B9I/9pgzjD5PANUeOPvKuS09a0d423GDwB1BjmrdZdpEpevFvHEG','pingal@gmail.com','+917428578319',3,1,24,'2026-07-04 11:09:27'),
+(40,'USR90241','casimir',2,'$2a$10$1v0p5FP7HFe/PB2wUDHf2ew5nrd3CiJGRIRKtAsPbRG9gc7wovRA2','casimir@gmail.com','+919448578319',3,1,24,'2026-07-04 11:10:22');
