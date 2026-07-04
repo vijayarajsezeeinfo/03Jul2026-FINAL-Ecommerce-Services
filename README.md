@@ -402,7 +402,7 @@ MySQL Database
 
 # Author
 
-**Vijay Raj**
+**Vijayaraj Selvaraj**
 
 Java Full Stack Developer
 
