@@ -924,7 +924,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"code\": \"USR19906\",\r\n    \"username\": \"pingal\",\r\n    \"password\": \"pingal@123\",\r\n    \"email\": \"pingal@gmail.com\",\r\n    \"mobile\": \"+917428578319\",\r\n    \"role\": 3,\r\n    \"namespace\": {\r\n        \"code\": \"AMZN001\"\r\n    },\r\n    \"activeFlag\": 1\r\n}",
+              "raw": "{\r\n    \"code\": \"USR19906\",\r\n    \"username\": \"pingal\",\r\n    \"password\": \"pingall@123\",\r\n    \"email\": \"pingal@gmail.com\",\r\n    \"mobile\": \"+917428578319\",\r\n    \"role\": 3,\r\n    \"namespace\": {\r\n        \"code\": \"AMZN001\"\r\n    },\r\n    \"activeFlag\": 1\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
