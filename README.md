@@ -52,18 +52,18 @@ A RESTful E-Commerce backend application developed using **Java**, **Spring MVC*
 
 ## Namespace
 
-**POST** `baseUrl/{authToken}/namespace/update`
+**POST** `baseUrl/{authtoken}/namespace/update`
 
 - Create Namespace
 - Update Namespace
 - Soft Delete Namespace
 - Reactivate Namespace
 
-**GET** `baseUrl/{authToken}/namespace/{namespaceCode}`
+**GET** `baseUrl/{authtoken}/namespace/{namespaceCode}`
 
 - Get Namespace By Code
 
-**GET** `baseUrl/{authToken}/namespace`
+**GET** `baseUrl/{authtoken}/namespace`
 
 - Get All Namespaces
 
@@ -71,18 +71,18 @@ A RESTful E-Commerce backend application developed using **Java**, **Spring MVC*
 
 ## User
 
-**POST** `baseUrl/{authToken}/user/update`
+**POST** `baseUrl/{authtoken}/user/update`
 
 - Create User
 - Update User
 - Soft Delete User
 - Reactivate User
 
-**GET** `baseUrl/{authToken}/user/{userCode}`
+**GET** `baseUrl/{authtoken}/user/{userCode}`
 
 - Get User By Code
 
-**GET** `baseUrl/{authToken}/user/{namespaceCode}`
+**GET** `baseUrl/{authtoken}/user/{namespaceCode}`
 
 - Get All Users
 
@@ -90,18 +90,18 @@ A RESTful E-Commerce backend application developed using **Java**, **Spring MVC*
 
 ## Address
 
-**POST** `baseUrl/{authToken}/address/update`
+**POST** `baseUrl/{authtoken}/address/update`
 
 - Create Address
 - Update Address
 - Soft Delete Address
 - Reactivate Address
 
-**GET** `baseUrl/{authToken}/address/{addressCode}`
+**GET** `baseUrl/{authtoken}/address/{addressCode}`
 
 - Get Address By Code
 
-**GET** `baseUrl/{authToken}/address/{namespaceCode}`
+**GET** `baseUrl/{authtoken}/address/{namespaceCode}`
 
 - Get All Addresses
 
@@ -109,18 +109,18 @@ A RESTful E-Commerce backend application developed using **Java**, **Spring MVC*
 
 ## Brand
 
-**POST** `baseUrl/{authToken}/brand/update`
+**POST** `baseUrl/{authtoken}/brand/update`
 
 - Create Brand
 - Update Brand
 - Soft Delete Brand
 - Reactivate Brand
 
-**GET** `baseUrl/{authToken}/brand/{brandCode}`
+**GET** `baseUrl/{authtoken}/brand/{brandCode}`
 
 - Get Brand By Code
 
-**GET** `baseUrl/{authToken}/brand/{namespaceCode}`
+**GET** `baseUrl/{authtoken}/brand/{namespaceCode}`
 
 - Get All Brands
 
@@ -128,18 +128,18 @@ A RESTful E-Commerce backend application developed using **Java**, **Spring MVC*
 
 ## Category
 
-**POST** `baseUrl/{authToken}/category/update`
+**POST** `baseUrl/{authtoken}/category/update`
 
 - Create Category
 - Update Category
 - Soft Delete Category
 - Reactivate Category
 
-**GET** `baseUrl/{authToken}/category/{categoryCode}`
+**GET** `baseUrl/{authtoken}/category/{categoryCode}`
 
 - Get Category By Code
 
-**GET** `baseUrl/{authToken}/category/{namespaceCode}`
+**GET** `baseUrl/{authtoken}/category/{namespaceCode}`
 
 - Get All Categories
 
@@ -147,18 +147,18 @@ A RESTful E-Commerce backend application developed using **Java**, **Spring MVC*
 
 ## Product
 
-**POST** `baseUrl/{authToken}/product/update`
+**POST** `baseUrl/{authtoken}/product/update`
 
 - Create Product
 - Update Product
 - Soft Delete Product
 - Reactivate Product
 
-**GET** `baseUrl/{authToken}/product/{productCode}`
+**GET** `baseUrl/{authtoken}/product/{productCode}`
 
 - Get Product By Code
 
-**GET** `baseUrl/{authToken}/product/{namespaceCode}`
+**GET** `baseUrl/{authtoken}/product/{namespaceCode}`
 
 - Get All Products
 
@@ -166,18 +166,18 @@ A RESTful E-Commerce backend application developed using **Java**, **Spring MVC*
 
 ## Product Inventory
 
-**POST** `baseUrl/{authToken}/productInventory/update`
+**POST** `baseUrl/{authtoken}/productInventory/update`
 
 - Create Product Inventory
 - Update Product Inventory
 - Soft Delete Product Inventory
 - Reactivate Product Inventory
 
-**GET** `baseUrl/{authToken}/productInventory/{productCode}`
+**GET** `baseUrl/{authtoken}/productInventory/{productCode}`
 
 - Get Product Inventory By Product Code
 
-**GET** `baseUrl/{authToken}/productInventory/{namespaceCode}`
+**GET** `baseUrl/{authtoken}/productInventory/{namespaceCode}`
 
 - Get All Product Inventories
 
@@ -185,18 +185,18 @@ A RESTful E-Commerce backend application developed using **Java**, **Spring MVC*
 
 ## Cart Item
 
-**POST** `baseUrl/{authToken}/cartItem/update`
+**POST** `baseUrl/{authtoken}/cartItem/update`
 
 - Create Cart Item
 - Update Cart Item
 - Soft Delete Cart Item
 - Reactivate Cart Item
 
-**GET** `baseUrl/{authToken}/cartItem/{cartItemCode}`
+**GET** `baseUrl/{authtoken}/cartItem/{cartItemCode}`
 
 - Get Cart Item By Code
 
-**GET** `baseUrl/{authToken}/cartItem/{namespaceCode}`
+**GET** `baseUrl/{authtoken}/cartItem/{namespaceCode}`
 
 - Get All Cart Items
 
@@ -204,11 +204,11 @@ A RESTful E-Commerce backend application developed using **Java**, **Spring MVC*
 
 ## Payment
 
-**GET** `baseUrl/{authToken}/payment/{paymentCode}`
+**GET** `baseUrl/{authtoken}/payment/{paymentCode}`
 
 - Get Payment By Code
 
-**GET** `baseUrl/{authToken}/payment/{namespaceCode}`
+**GET** `baseUrl/{authtoken}/payment/{namespaceCode}`
 
 - Get All Payments
 
@@ -216,16 +216,16 @@ A RESTful E-Commerce backend application developed using **Java**, **Spring MVC*
 
 ## Order Request
 
-**POST** `baseUrl/{authToken}/order/update`
+**POST** `baseUrl/{authtoken}/order/update`
 
 - Place Order
 - Update Order Status
 
-**GET** `baseUrl/{authToken}/order/{orderCode}`
+**GET** `baseUrl/{authtoken}/order/{orderCode}`
 
 - Get Order By Code
 
-**GET** `baseUrl/{authToken}/order/{namespaceCode}`
+**GET** `baseUrl/{authtoken}/order/{namespaceCode}`
 
 - Get All Orders
 
