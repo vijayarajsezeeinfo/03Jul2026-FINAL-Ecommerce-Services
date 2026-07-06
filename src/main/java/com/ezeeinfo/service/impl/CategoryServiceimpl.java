@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ezeeinfo.dao.CategoryDAO;
+import com.ezeeinfo.dao.NamespaceDAO;
 import com.ezeeinfo.dao.UserDAO;
 import com.ezeeinfo.dto.AuthDTO;
 import com.ezeeinfo.dto.CategoryDTO;
@@ -22,6 +23,8 @@ public class CategoryServiceimpl implements CategoryService {
 	CategoryDAO categoryDAO;
 	@Autowired
 	UserDAO userDAO;
+	@Autowired
+	NamespaceDAO namespaceDAO;
 
 	private static final Logger LOG = LoggerFactory.getLogger(CategoryServiceimpl.class);
 
@@ -37,6 +40,13 @@ public class CategoryServiceimpl implements CategoryService {
 		}
 
 		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		// Checking if given namespace exists or not
+		if (namespaceDAO.getNamespaceByCode(namespaceCode) == null) {
+			LOG.info("Namespace {} not found to fetch all categories", namespaceCode);
+			throw new ServiceException("EXCEPTION 404: Namespace Not Found");
+		}
+
 		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(namespaceCode)) {
 			throw new ServiceException("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW CATEGORY");
 		}

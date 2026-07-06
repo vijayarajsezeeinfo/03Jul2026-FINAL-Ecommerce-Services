@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ezeeinfo.dao.AddressDAO;
+import com.ezeeinfo.dao.NamespaceDAO;
 import com.ezeeinfo.dao.UserDAO;
 import com.ezeeinfo.dto.AddressDTO;
 import com.ezeeinfo.dto.AuthDTO;
@@ -22,6 +23,8 @@ public class AddressServiceImpl implements AddressService {
 	AddressDAO addressDAO;
 	@Autowired
 	UserDAO userDAO;
+	@Autowired
+	NamespaceDAO namespaceDAO;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AddressServiceImpl.class);
 
@@ -37,6 +40,12 @@ public class AddressServiceImpl implements AddressService {
 		}
 
 		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		// Checking if given namespace exists or not
+		if (namespaceDAO.getNamespaceByCode(namespaceCode) == null) {
+			LOG.info("Namespace {} not found to fetch all addresses", namespaceCode);
+			throw new ServiceException("EXCEPTION 404: Namespace Not Found");
+		}
 
 		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(namespaceCode)) {
 			LOG.info("EXCEPTION 403: ONLY RESPECTIVE ADMIN CAN VIEW");

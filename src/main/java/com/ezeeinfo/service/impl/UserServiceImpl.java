@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ezeeinfo.dao.NamespaceDAO;
 import com.ezeeinfo.dao.UserDAO;
 import com.ezeeinfo.dto.AuthDTO;
 import com.ezeeinfo.dto.UserDTO;
@@ -24,6 +25,8 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private CacheManager cacheManager;
+	@Autowired
+	NamespaceDAO namespaceDAO;
 
 	private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -39,6 +42,12 @@ public class UserServiceImpl implements UserService {
 			throw new ServiceException("Please Login First");
 		}
 		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		// Checking if given namespace exists or not
+		if (namespaceDAO.getNamespaceByCode(namespaceCode) == null) {
+			LOG.info("Namespace {} not found to fetch all users", namespaceCode);
+			throw new ServiceException("EXCEPTION 404: Namespace Not Found");
+		}
 
 		// ONLY SAMENAMESPACE USER CAN VIEW
 		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(namespaceCode)) {

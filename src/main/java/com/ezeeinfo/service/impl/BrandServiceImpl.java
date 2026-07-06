@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ezeeinfo.dao.BrandDAO;
+import com.ezeeinfo.dao.NamespaceDAO;
 import com.ezeeinfo.dao.UserDAO;
 import com.ezeeinfo.dto.AuthDTO;
 import com.ezeeinfo.dto.BrandDTO;
@@ -21,6 +22,8 @@ public class BrandServiceImpl implements BrandService {
 	BrandDAO brandDAO;
 	@Autowired
 	UserDAO userDAO;
+	@Autowired
+	NamespaceDAO namespaceDAO;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BrandServiceImpl.class);
 
@@ -35,6 +38,12 @@ public class BrandServiceImpl implements BrandService {
 			throw new ServiceException("Please Login First");
 		}
 		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		// Checking if given namespace exists or not
+		if (namespaceDAO.getNamespaceByCode(namespaceCode) == null) {
+			LOG.info("Namespace {} not found to fetch all brands", namespaceCode);
+			throw new ServiceException("EXCEPTION 404: Namespace Not Found");
+		}
 
 		if (!loggedInUser.getNamespace().getCode().equalsIgnoreCase(namespaceCode)) {
 			LOG.info("EXCEPTION 403: ONLY USER FROM {} CAN VIEW ALL", namespaceCode);

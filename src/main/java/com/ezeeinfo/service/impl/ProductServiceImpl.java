@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ezeeinfo.dao.NamespaceDAO;
 import com.ezeeinfo.dao.ProductDAO;
 import com.ezeeinfo.dao.UserDAO;
 import com.ezeeinfo.dto.AuthDTO;
@@ -21,6 +22,8 @@ public class ProductServiceImpl implements ProductService {
 	ProductDAO productDAO;
 	@Autowired
 	UserDAO userDAO;
+	@Autowired
+	NamespaceDAO namespaceDAO;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
 
@@ -36,6 +39,13 @@ public class ProductServiceImpl implements ProductService {
 		}
 
 		UserDTO loggedInUser = userDAO.getUser(authDTO.getUser().getId());
+
+		// Checking if given namespace exists or not
+		if (namespaceDAO.getNamespaceByCode(namespaceCode) == null) {
+			LOG.info("Namespace {} not found to fetch all products", namespaceCode);
+			throw new ServiceException("EXCEPTION 404: Namespace Not Found");
+		}
+
 		if (!namespaceCode.equals(loggedInUser.getNamespace().getCode())) {
 			LOG.info("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW PRODUCTS");
 			throw new ServiceException("EXCEPTION 403: ONLY SAME NAMESPACE USER CAN VIEW PRODUCTS");
