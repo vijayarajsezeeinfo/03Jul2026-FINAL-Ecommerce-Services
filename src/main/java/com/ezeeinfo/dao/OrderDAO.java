@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ezeeinfo.config.DBConfig;
 import com.ezeeinfo.controller.ProductController;
+import com.ezeeinfo.dto.AddressDTO;
 import com.ezeeinfo.dto.BrandDTO;
 import com.ezeeinfo.dto.CategoryDTO;
 import com.ezeeinfo.dto.NamespaceDTO;
@@ -47,6 +48,8 @@ public class OrderDAO {
 	NamespaceDAO namespaceDAO;
 	@Autowired
 	ProductInventoryDAO productInventoryDAO;
+	@Autowired
+	AddressDAO addressDAO;
 
 	private static final Logger LOG = LoggerFactory.getLogger(OrderDAO.class);
 
@@ -108,6 +111,14 @@ public class OrderDAO {
 		if (actualAmount < orderRequestDTO.getPayment().getPaidAmount()) {
 			orderRequestDTO.getPayment().setBalanceAmount(orderRequestDTO.getPayment().getPaidAmount() - actualAmount);
 			LOG.info("Balance Amount : {}", orderRequestDTO.getPayment().getBalanceAmount());
+		}
+
+		// checking whether user is having address in db or not
+		Integer OrderPlacedUserId = userDAO.getUserByCode(orderRequestDTO.getOrder().getUser().getCode()).getId();
+		AddressDTO addressDTO = addressDAO.getAddressByUserId(OrderPlacedUserId);
+		if (addressDTO.getId() == null) {
+			LOG.info("EXCEPTION 404: User has not stored his address. Please store address before ordering");
+			throw new ServiceException("EXCEPTION 404: User has not stored his address. Please store address before ordering");
 		}
 
 		// insert in orders table====================================

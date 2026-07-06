@@ -42,7 +42,7 @@ public class AddressDAO {
 					UserDTO userDTO = userDAO.getUser(rs.getInt("address_user_id"));
 					NamespaceDTO namespaceDTO = namespaceDAO.getNamespace(rs.getInt("address_namespace_id"));
 					UserDTO updatedBy = userDAO.getUser(rs.getInt("address_updated_by"));
-					
+
 					AddressDTO addressDTO = new AddressDTO();
 					addressDTO.setId(rs.getInt("address_id"));
 					addressDTO.setCode(rs.getString("address_code"));
@@ -144,4 +144,44 @@ public class AddressDAO {
 		return addressDTO;
 	}
 
+	public AddressDTO getAddressByUserId(int userId) {
+		String sql = "SELECT id, `code`, namespace_id, door_no, street, place, city, state, country, pincode, user_id, active_flag, updated_by FROM address WHERE user_id=?;";
+		AddressDTO addressDTO = null;
+		try (Connection connection = DBConfig.getInstance().getConnection(); PreparedStatement statement = connection.prepareStatement(sql);) {
+			statement.setInt(1, userId);
+			try (ResultSet rs = statement.executeQuery();) {
+				if (!rs.next()) {
+					LOG.info("EXCEPTION 404: Address not found for the given user");
+					throw new ServiceException("EXCEPTION 404: Address not found for the User");
+				}
+
+				NamespaceDTO namespaceDTO = namespaceDAO.getNamespace(rs.getInt("namespace_id"));
+				UserDTO userDTO = userDAO.getUser(userId);
+				UserDTO updatedBy = userDAO.getUser(rs.getInt("updated_by"));
+
+				addressDTO = new AddressDTO();
+				addressDTO.setId(rs.getInt("id"));
+				addressDTO.setCode(rs.getString("code"));
+				addressDTO.setNamespace(namespaceDTO);
+				addressDTO.setDoorNo(rs.getString("door_no"));
+				addressDTO.setStreet(rs.getString("street"));
+				addressDTO.setPlace(rs.getString("place"));
+				addressDTO.setCity(rs.getString("city"));
+				addressDTO.setState(rs.getString("state"));
+				addressDTO.setCountry(rs.getString("country"));
+				addressDTO.setPincode(rs.getInt("pincode"));
+				addressDTO.setUser(userDTO);
+				addressDTO.setActiveFlag(rs.getInt("active_flag"));
+				addressDTO.setUpdatedBy(updatedBy);
+
+			}
+			catch (SQLException e) {
+				LOG.info("SQLException while getting address by user id");
+			}
+		}
+		catch (SQLException e) {
+			LOG.info("SQLException while getting address by user id");
+		}
+		return addressDTO;
+	}
 }
