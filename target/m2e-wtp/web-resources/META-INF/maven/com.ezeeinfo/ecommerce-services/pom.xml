@@ -18,7 +18,6 @@
 		<maven.compiler.target>21</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>5.3.38</spring.version>
-		<!--<spring.version>5.3.39</spring.version>-->
 		<jackson.version>2.17.2</jackson.version>
 	</properties>
 
@@ -65,7 +64,7 @@
 			<version>${jackson.version}</version>
 		</dependency>
 
-		<!-- Java 8 Date Time -->
+		<!-- for Date Time JSON -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
@@ -108,51 +107,42 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>2.0.13</version>
 		</dependency>
-
+		<!--Logging in console-->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>2.0.13</version>
 		</dependency>
 
-		<!-- Connection Pool -->
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>5.1.0</version>
-		</dependency>
-
 		<!--ehcache-->
 		<dependency>
 			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>3.10.8</version>
+			<version>3.9.11</version>
 		</dependency>
 
+		<!--redis-->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-redis</artifactId>
 			<version>3.5.0</version>
 		</dependency>
 
+		<!--redis client-->
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<version>5.2.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.19.1</version>
-		</dependency>
-
+		<!--to Encrypt Password-->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-crypto</artifactId>
 			<version>6.3.1</version>
 		</dependency>
 
+		<!--JWT-->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>

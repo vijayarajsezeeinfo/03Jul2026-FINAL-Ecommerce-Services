@@ -120,9 +120,12 @@ public class NamespaceServiceImpl implements NamespaceService {
 		NamespaceDTO updatedNamespace = namespaceDAO.update(namespaceDTO);
 		if (updatedNamespace != null) {
 			if (updatedNamespace.getActiveFlag() == 9 || updatedNamespace.getActiveFlag() < 2) {
+				if (updatedNamespace.getActiveFlag() == 9) {
+					updatedNamespace.setActiveFlag(1);
+				}
 				redisTemplate.opsForValue().set(updatedNamespace.getCode(), updatedNamespace);
 			}
-			// if the namespace is deleted, removing from namespaceCacheF
+			// if the namespace is deleted, removing from namespaceCache
 			if (updatedNamespace.getActiveFlag() == 2) {
 				redisTemplate.delete(updatedNamespace.getCode());
 			}

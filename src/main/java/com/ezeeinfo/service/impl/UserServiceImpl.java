@@ -172,6 +172,9 @@ public class UserServiceImpl implements UserService {
 			// STORING IN userCache
 			Cache<String, UserDTO> userCache = cacheManager.getCache("userCache", String.class, UserDTO.class);
 			if (updatedUser.getActiveFlag() == 9 || updatedUser.getActiveFlag() < 2) {
+				if (updatedUser.getActiveFlag() == 9) {
+					updatedUser.setActiveFlag(1);
+				}
 				userCache.put(updatedUser.getCode(), updatedUser);
 			}
 			// if the user is deleted, removing from userCache

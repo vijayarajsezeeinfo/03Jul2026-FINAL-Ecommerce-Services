@@ -115,7 +115,7 @@ public class AddressServiceImpl implements AddressService {
 		}
 
 		if (!addressDTO.getCode().equalsIgnoreCase("null")) {
-			if (!loggedInUser.getCode().equalsIgnoreCase(addressOwningUser.getCode()) || loggedInUser.getRole().getId() != 1) {
+			if (!loggedInUser.getCode().equalsIgnoreCase(addressOwningUser.getCode()) && loggedInUser.getRole().getId() != 1) {
 				LOG.info("EXCEPTION 403: ONLY RESPECTIVE USER OR ADMIN CAN SAVE/MODIFY THE USER ADDRESS");
 				throw new ServiceException("EXCEPTION 403: ONLY RESPECTIVE USER OR ADMIN CAN SAVE/MODIFY THE USER ADDRESS");
 			}
