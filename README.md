@@ -44,10 +44,14 @@ A RESTful E-Commerce backend application developed using **Java**, **Spring MVC*
 
 ## Authentication
 
-**POST** `baseUrl/login`
+**POST** `baseUrl/auth/login`
 
 - User Login
 
+**GET**  `baseUrl/auth/{authtoken}/logout`
+
+- User Logout
+  
 ---
 
 ## Namespace
