@@ -2,6 +2,7 @@ package com.ezeeinfo.controller;
 
 import org.ehcache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,7 +16,7 @@ import com.ezeeinfo.dto.LoginResponseDTO;
 import com.ezeeinfo.service.AuthService;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/auth")
 public class AuthController {
 	@Autowired
 	UserDAO userDAO;
@@ -24,7 +25,7 @@ public class AuthController {
 	@Autowired
 	AuthService authService;
 
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public LoginResponseIO login(@RequestBody LoginRequestIO request) {
 
 		LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
@@ -37,6 +38,11 @@ public class AuthController {
 		LoginResponseIO loginResponseIO = new LoginResponseIO();
 		loginResponseIO.setToken(loginResponseDTO.getToken());
 		return loginResponseIO;
+	}
+
+	@RequestMapping(value = "{authtoken}/logout", method = RequestMethod.GET)
+	public String logout(@PathVariable("authtoken") String authToken) {
+		return authService.logout(authToken);
 	}
 
 }

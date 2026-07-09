@@ -5,4 +5,6 @@ import com.ezeeinfo.dto.LoginResponseDTO;
 
 public interface AuthService {
 	LoginResponseDTO login(LoginRequestDTO request);
+
+	String logout(String authToken);
 }
