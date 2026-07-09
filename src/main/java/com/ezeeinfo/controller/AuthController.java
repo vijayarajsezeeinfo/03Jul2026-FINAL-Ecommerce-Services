@@ -16,7 +16,7 @@ import com.ezeeinfo.dto.LoginResponseDTO;
 import com.ezeeinfo.service.AuthService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("auth")
 public class AuthController {
 	@Autowired
 	UserDAO userDAO;
@@ -40,7 +40,7 @@ public class AuthController {
 		return loginResponseIO;
 	}
 
-	@RequestMapping(value = "{authtoken}/logout", method = RequestMethod.GET)
+	@RequestMapping(value = "/{authtoken}/logout", method = RequestMethod.GET)
 	public String logout(@PathVariable("authtoken") String authToken) {
 		return authService.logout(authToken);
 	}
